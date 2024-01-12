@@ -194,6 +194,8 @@ void app_main(void)
         const char *service_key = NULL;
 
         wifi_prov_mgr_endpoint_create("custom-data");
+        
+        wifi_prov_security_t security = WIFI_PROV_SECURITY_0;
 
         ESP_ERROR_CHECK(wifi_prov_mgr_start_provisioning(security, (const void *) sec_params, service_name, service_key));
 
@@ -215,7 +217,7 @@ void app_main(void)
     }
 
     xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_EVENT, true, true, portMAX_DELAY);
-    
+     
     while (1) {
          ESP_LOGI(TAG, "Hello World!");
          vTaskDelay(1000 / portTICK_PERIOD_MS);
