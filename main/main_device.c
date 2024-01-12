@@ -13,10 +13,10 @@
 #include <wifi_provisioning/manager.h>
 #include <wifi_provisioning/scheme_softap.h>
 
+#include <string.h>
 
 #define PROV_TRANSPORT_SOFTAP   "softap"
 
-#include "SStruct.h"
 
 const int WIFI_CONNECTED_EVENT = BIT0;
 static EventGroupHandle_t wifi_event_group;
@@ -49,7 +49,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
                          (*reason == WIFI_PROV_STA_AUTH_ERROR) ?
                          "Wi-Fi station authentication failed" : "Wi-Fi access-point not found");
                 retries++;
-                if (retries >= CONFIG_EXAMPLE_PROV_MGR_MAX_RETRY_CNT) {
+                if (retries >= 10) {
                     ESP_LOGI(TAG, "Failed to connect with provisioned AP, reseting provisioned credentials");
                     wifi_prov_mgr_reset_sm_state_on_failure();
                     retries = 0;
@@ -167,9 +167,9 @@ void app_main(void)
 
     bool provisioned = false;
 
-    #ifdef CONFIG_EXAMPLE_RESET_PROVISIONED
-        wifi_prov_mgr_reset_provisioning();
-    #else
+    // #ifdef 0
+    //     wifi_prov_mgr_reset_provisioning();
+    // #else
 
     ESP_ERROR_CHECK(wifi_prov_mgr_is_provisioned(&provisioned));
 
@@ -197,7 +197,7 @@ void app_main(void)
         
         wifi_prov_security_t security = WIFI_PROV_SECURITY_0;
 
-        ESP_ERROR_CHECK(wifi_prov_mgr_start_provisioning(security, (const void *) sec_params, service_name, service_key));
+        ESP_ERROR_CHECK(wifi_prov_mgr_start_provisioning(security, NULL, service_name, service_key));
 
         /* The handler for the optional endpoint created above.
          * This call must be made after starting the provisioning, and only if the endpoint
