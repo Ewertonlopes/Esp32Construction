@@ -167,11 +167,11 @@ void app_main(void)
 
     bool provisioned = false;
 
-    // #ifdef 0
-    //     wifi_prov_mgr_reset_provisioning();
-    // #else
-
+    #ifdef true
+        wifi_prov_mgr_reset_provisioning();
+    #else
     ESP_ERROR_CHECK(wifi_prov_mgr_is_provisioned(&provisioned));
+    #endif
 
     if (!provisioned) {
         ESP_LOGI(TAG, "Starting provisioning");

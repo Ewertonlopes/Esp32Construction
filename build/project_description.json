@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "Esp32SaiotLibrary",
-    "project_version":    "cb9362b-dirty",
+    "project_version":    "2cbff79-dirty",
     "project_path":       "/home/edev/Documents/Repositories/Projects/Esp32Construction",
     "idf_path":           "/home/edev/esp/esp-idf",
     "build_dir":          "/home/edev/Documents/Repositories/Projects/Esp32Construction/build",

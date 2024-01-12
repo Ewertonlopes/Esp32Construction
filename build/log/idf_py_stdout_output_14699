@@ -1,0 +1,155 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7136
+load:0x40078000,len:15780
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3884
+entry 0x40080650
+[0;32mI (31) boot: ESP-IDF v5.2-dev-2708-g3640dc86bb 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jan 12 2024 09:29:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v3.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (78) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (93) boot: End of partition table[0m
+[0;32mI (97) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=29c30h (171056) map[0m
+[0;32mI (168) esp_image: segment 1: paddr=00039c58 vaddr=3ffb0000 size=03740h ( 14144) load[0m
+[0;32mI (174) esp_image: segment 2: paddr=0003d3a0 vaddr=40080000 size=02c78h ( 11384) load[0m
+[0;32mI (179) esp_image: segment 3: paddr=00040020 vaddr=400d0020 size=99c94h (629908) map[0m
+[0;32mI (409) esp_image: segment 4: paddr=000d9cbc vaddr=40082c78 size=12f94h ( 77716) load[0m
+[0;32mI (453) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (453) boot: Disabling RNG early entropy source...[0m
+[0;32mI (464) cpu_start: Multicore app[0m
+[0;32mI (465) cpu_start: Pro cpu up.[0m
+[0;32mI (465) cpu_start: Starting app cpu, entry point is 0x400811d8[0m
+[0;32mI (0) cpu_start: App cpu up.[0m
+[0;32mI (483) cpu_start: Pro cpu start user code[0m
+[0;32mI (483) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (483) cpu_start: Application information:[0m
+[0;32mI (487) cpu_start: Project name:     Esp32SaiotLibrary[0m
+[0;32mI (493) cpu_start: App version:      2cbff79-dirty[0m
+[0;32mI (499) cpu_start: Compile time:     Jan 12 2024 09:40:34[0m
+[0;32mI (505) cpu_start: ELF file SHA256:  3eec0dedd...[0m
+[0;32mI (510) cpu_start: ESP-IDF:          v5.2-dev-2708-g3640dc86bb[0m
+[0;32mI (517) cpu_start: Min chip rev:     v0.0[0m
+[0;32mI (521) cpu_start: Max chip rev:     v3.99 [0m
+[0;32mI (526) cpu_start: Chip rev:         v3.0[0m
+[0;32mI (531) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (538) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (544) heap_init: At 3FFB77F0 len 00028810 (162 KiB): DRAM[0m
+[0;32mI (550) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (557) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (563) heap_init: At 40095C0C len 0000A3F4 (40 KiB): IRAM[0m
+[0;32mI (571) spi_flash: detected chip: generic[0m
+[0;32mI (574) spi_flash: flash io: dio[0m
+[0;33mW (578) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (592) app_start: Starting scheduler on CPU0[0m
+[0;32mI (596) app_start: Starting scheduler on CPU1[0m
+[0;32mI (596) main_task: Started on CPU0[0m
+[0;32mI (606) main_task: Calling app_main()[0m
+I (674) wifi:wifi driver task: 3ffbfb24, prio:23, stack:6656, core=0
+I (709) wifi:wifi firmware version: e03c1ca
+I (709) wifi:wifi certification version: v7.0
+I (710) wifi:config NVS flash: enabled
+I (710) wifi:config nano formating: disabled
+I (714) wifi:Init data frame dynamic rx buffer num: 32
+I (719) wifi:Init management frame dynamic rx buffer num: 32
+I (724) wifi:Init management short buffer num: 32
+I (728) wifi:Init dynamic tx buffer num: 32
+I (732) wifi:Init static rx buffer size: 1600
+I (737) wifi:Init static rx buffer num: 10
+I (740) wifi:Init dynamic rx buffer num: 32
+[0;32mI (745) wifi_init: rx ba win: 6[0m
+[0;32mI (748) wifi_init: tcpip mbox: 32[0m
+[0;32mI (752) wifi_init: udp mbox: 6[0m
+[0;32mI (756) wifi_init: tcp mbox: 6[0m
+[0;32mI (759) wifi_init: tcp tx win: 5744[0m
+[0;32mI (763) wifi_init: tcp rx win: 5744[0m
+[0;32mI (768) wifi_init: tcp mss: 1440[0m
+[0;32mI (772) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (776) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (813) MAIN: Starting provisioning[0m
+[0;32mI (817) phy_init: phy_version 4771,450c73b,Aug 16 2023,11:03:10[0m
+I (903) wifi:mode : sta (94:b5:55:f9:83:2c)
+I (904) wifi:enable tsf
+I (914) wifi:mode : sta (94:b5:55:f9:83:2c) + softAP (94:b5:55:f9:83:2d)
+I (916) wifi:Total power save buffer number: 16
+I (917) wifi:Init max length of beacon: 752/752
+I (919) wifi:Init max length of beacon: 752/752
+[0;32mI (926) esp_netif_lwip: DHCP server started on interface WIFI_AP_DEF with IP: 192.168.4.1[0m
+I (926) wifi:Total power save buffer number: 16
+[0;32mI (939) esp_netif_lwip: DHCP server started on interface WIFI_AP_DEF with IP: 192.168.4.1[0m
+[0;32mI (945) wifi_prov_mgr: Provisioning started with service name : PROV_F9832C [0m
+[0;32mI (953) MAIN: Provisioning started[0m
+I (55318) wifi:new:<1,0>, old:<1,1>, ap:<1,1>, sta:<0,0>, prof:1
+I (55321) wifi:station: 8a:8f:63:aa:e1:54 join, AID=1, bgn, 20
+[0;32mI (55322) MAIN: SoftAP transport: Connected![0m
+I (55540) wifi:<ba-add>idx:2 (ifx:1, 8a:8f:63:aa:e1:54), tid:0, ssn:0, winSize:64
+[0;32mI (55773) esp_netif_lwip: DHCP server assigned IP to a client, IP is: 192.168.4.2[0m
+I (55996) wifi:<ba-add>idx:3 (ifx:1, 8a:8f:63:aa:e1:54), tid:7, ssn:0, winSize:64
+[0;33mW (56281) httpd_uri: httpd_uri: URI '/' not found[0m
+[0;33mW (56281) httpd_txrx: httpd_resp_send_err: 404 Not Found - Nothing matches the given URI[0m
+[0;32mI (80005) MAIN: Received Wi-Fi credentials
+	SSID     : brisa-1835136
+	Password : osaxzp72[0m
+I (83844) wifi:primary chan differ, old=1, new=4, start CSA timer
+I (84245) wifi:switch to channel 4
+I (84246) wifi:ap channel adjust o:1,1 n:4,1
+I (84246) wifi:new:<4,0>, old:<1,0>, ap:<4,1>, sta:<0,0>, prof:1
+I (84249) wifi:new:<4,1>, old:<4,0>, ap:<4,1>, sta:<4,0>, prof:1
+I (85422) wifi:state: init -> auth (b0)
+I (85432) wifi:state: auth -> assoc (0)
+I (85451) wifi:state: assoc -> run (10)
+I (85674) wifi:<ba-add>idx:0 (ifx:0, e4:c3:2a:c7:49:07), tid:0, ssn:209, winSize:64
+I (85681) wifi:connected with brisa-1835136, aid = 3, channel 4, BW20, bssid = e4:c3:2a:c7:49:07
+I (85682) wifi:security: WPA2-PSK, phy: bgn, rssi: -45
+I (85693) wifi:pm start, type: 1
+
+I (85772) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+W (85781) wifi:[ADDBA]rx delba, code:39, delete tid:0
+I (85782) wifi:<ba-del>idx:0, tid:0
+W (85782) wifi:[ADDBA]rx delba, code:39, delete tid:6
+[0;32mI (87198) MAIN: Connected with IP Address:192.168.0.8[0m
+[0;32mI (87200) esp_netif_handlers: sta ip: 192.168.0.8, mask: 255.255.255.0, gw: 192.168.0.1[0m
+[0;32mI (87203) wifi_prov_mgr: STA Got IP[0m
+[0;32mI (87207) MAIN: Provisioning successful[0m
+[0;32mI (87211) MAIN: Hello World![0m
+[0;32mI (88215) MAIN: Hello World![0m
+I (88520) wifi:station: 8a:8f:63:aa:e1:54 leave, AID = 1, bss_flags is 134243, bss:0x3ffc8b68
+I (88521) wifi:new:<4,0>, old:<4,1>, ap:<4,1>, sta:<4,0>, prof:1
+I (88524) wifi:<ba-del>idx:2, tid:0
+I (88527) wifi:<ba-del>idx:3, tid:7
+I (88530) wifi:mode : sta (94:b5:55:f9:83:2c)
+[0;32mI (88537) wifi_prov_mgr: Provisioning stopped[0m
+[0;32mI (88539) MAIN: SoftAP transport: Disconnected![0m
+[0;32mI (89215) MAIN: Hello World![0m
+[0;32mI (90215) MAIN: Hello World![0m
+[0;32mI (91215) MAIN: Hello World![0m
+[0;32mI (92215) MAIN: Hello World![0m
+I (92727) wifi:<ba-add>idx:0 (ifx:0, e4:c3:2a:c7:49:07), tid:6, ssn:3, winSize:64
+[0;32mI (93215) MAIN: Hello World![0m
+[0;32mI (94215) MAIN: Hello World![0m
+[0;32mI (95215) MAIN: Hello World![0m
+[0;32mI (96215) MAIN: Hello World![0m
+[0;32mI (97215) MAIN: Hello World![0m
+[0;32mI (98215) MAIN: Hello World![0m
+[0;32mI (99215) MAIN: Hello World![0m
+[0;32mI (100215) MAIN: Hello World![0m
+[0;32mI (101215) MAIN: Hello World![0m
+[0;32mI (102215) MAIN: Hello World![0m
+[0;32mI (103215) MAIN: Hello World![0m
+[0;32mI (104215) MAIN: Hello World![0m
+[0;32mI (105215) MAIN: Hello World![0m
+[0;32mI (106215) MAIN: Hello World![0m
