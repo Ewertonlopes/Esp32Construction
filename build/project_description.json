@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "Esp32SaiotLibrary",
-    "project_version":    "2cbff79-dirty",
+    "project_version":    "9fb8dc4-dirty",
     "project_path":       "/home/edev/Documents/Repositories/Projects/Esp32Construction",
     "idf_path":           "/home/edev/esp/esp-idf",
     "build_dir":          "/home/edev/Documents/Repositories/Projects/Esp32Construction/build",
@@ -805,7 +805,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/home/edev/Documents/Repositories/Projects/Esp32Construction/build/esp-idf/main/libmain.a",
-            "sources": [ "/home/edev/Documents/Repositories/Projects/Esp32Construction/main/main_device.c" ],
+            "sources": [ "/home/edev/Documents/Repositories/Projects/Esp32Construction/main/main_device.c", "/home/edev/Documents/Repositories/Projects/Esp32Construction/main/saiotprovision.c" ],
             "include_dirs": [ "." ]
         },
         "mbedtls": {

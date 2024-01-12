@@ -1,2 +1,2 @@
-idf_component_register(SRCS "main_device.c"
+idf_component_register(SRCS "main_device.c" "saiotprovision.c"
                        INCLUDE_DIRS ".")
