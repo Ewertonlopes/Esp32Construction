@@ -18,7 +18,14 @@ static const char *TAG = "MAIN";
 
 void app_main(void)
 {
+    //Create Every Struct
+
+    //Provision WIFI
     saiot_provision_start();
+
+    //Connect to MQTT
+
+    //Run Every Struct
 
     while (1) {
          ESP_LOGI(TAG, "Hello World!");
