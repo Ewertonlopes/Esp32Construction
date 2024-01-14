@@ -5,7 +5,7 @@
 const int WIFI_CONNECTED_EVENT = BIT0;
 static EventGroupHandle_t wifi_event_group;
 
-static const char *ProvTAG = "MAIN";
+static const char *ProvTAG = "Provision Module";
 
 static void event_handler(void* arg, esp_event_base_t event_base,
                           int32_t event_id, void* event_data)
