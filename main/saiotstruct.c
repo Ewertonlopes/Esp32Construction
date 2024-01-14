@@ -1,133 +1,133 @@
 
-#include <stdio.h>
+#include <saiotstruct.h>
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+static const char *sTAG = "Struct Module";
 
-#include "esp_log.h"
-
-#include "SStruct.h"
-
-static const char *TAG = "MAIN";
-
-float dia = 0;
-float dia2 = 0;
-float dia3 = 0;
-
-void *callback()
-{
-    float *teste;
-
-    teste = (float*)malloc(sizeof(float));
-
-    *teste = dia;
-
-    dia = dia + 1.0f;
-
-    // if(dia>30)
-    // {
-    //     dia = 0.0f;
-    // }
-
-    return teste;     
+void sensor_print(Sensor sens){
+    printf("Id:%s\nNome:%s\nType:%s\nData:%.2f\n\n",sens->Id,
+                                                    sens->Name,
+                                                    sens->type,
+                                                    *(float*)sens->data);
 }
 
-void *callback2()
-{
-    float *teste;
+/******************************************
+*****************  Task  ******************
+******************************************/
 
-    teste = (float*)malloc(sizeof(float));
+void base_sensor_task(void * pvParams){
+  TickType_t xLastWakeTime;
+  
+  Sensor Sens = (Sensor) pvParams;
+//   TickType_t xFrequency = pdMS_TO_TICKS(Sens->timeout);
+  xLastWakeTime = xTaskGetTickCount();
 
-    *teste = dia2;
-
-    dia2 = dia2 + 1.0f;
-
-    // if(dia2>30)
-    // {
-    //     dia2 = 0.0f;
-    // }
-
-    return teste;     
+  while (1) 
+  {
+    free(Sens->data);
+    Sens->data = Sens->callback();
+    //sensor_print(Sens);
+    vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Sens->timeout));
+  }
 }
 
-void *callback3()
-{
-    float *teste;
+/******************************************
+***************** Sensor ******************
+******************************************/
 
-    teste = (float*)malloc(sizeof(float));
+Sensor sensor_init( const char      *Id           ,
+                    const char      *Name         ,
+                    const char      *type         ,
+                    int             timeout       , 
+                    enum sensorType internal_type ,
+                    sensorCallback  callback){
 
-    *teste = dia3;
+    Sensor base = (Sensor)malloc(sizeof(Sen));
 
-    dia3 = dia3 + 1.0f;
+    base->Id = Id;
+    base->Name = Name;
+    base->type = type;
+    base->timeout = timeout;
+    base->callback = callback;
 
-    // if(dia3>30)
-    // {
-    //     dia3 = 0.0f;
-    // }
-
-    return teste;     
-}
-
-
-
-void app_main(void)
-{
-    int period = 1;
-    int period2 = 1;
-    int period3 = 1;
-
-    Sensor Teste = sensor_init("SupaSens","Sensor de Teste","Teste",period,number,callback);
-    Sensor Teste2 = sensor_init("Supa2","Sensor de Teste","Teste",period2,number,callback2);
-    Sensor Teste3 = sensor_init("Supa2","Sensor de Teste","Teste",period3,number,callback3);
-
-    // sensor_run(Teste);
-    Device B_Teste = device_init("ID0001","Main Device","Teste","Um device de testes","teste@teste.com","0123456789");
-
-    printf("Id:%s\nNome:%s\nClasse:%s\nDesc:%s\nLogin:%s\nSenha:%s\nN Disps:%u\n\n",B_Teste->Id,
-                                                                                    B_Teste->Name,
-                                                                                    B_Teste->Classe,
-                                                                                    B_Teste->Description,
-                                                                                    B_Teste->Login,
-                                                                                    B_Teste->Password,
-                                                                                    B_Teste->dispnumb);
-
-
-    device_add_sensor(B_Teste,Teste);
-    device_add_sensor(B_Teste,Teste2);
-    //device_add_sensor(B_Teste,Teste3);
-
-    printf("Id:%s\nNome:%s\nClasse:%s\nDesc:%s\nLogin:%s\nSenha:%s\nN Disps:%u\n\n",B_Teste->Id,
-                                                                                    B_Teste->Name,
-                                                                                    B_Teste->Classe,
-                                                                                    B_Teste->Description,
-                                                                                    B_Teste->Login,
-                                                                                    B_Teste->Password,
-                                                                                    B_Teste->dispnumb);
-
-    TickType_t xLastWakeTime;
-
-    device_run(B_Teste);
-    
-    const TickType_t xFrequency = pdMS_TO_TICKS(1000);
-    xLastWakeTime = xTaskGetTickCount();
-
-    while (1) 
+    switch(internal_type)
     {
-        printf("Frequency 1 Expected:%.0f\nFrequency 1 obtain:%.0f\n",(1.0f/(((float)period/1000.0f))),dia);
-        printf("Frequency 2 Expected:%.0f\nFrequency 2 obtain:%.0f\n",(1.0f/(((float)period2/1000.0f))),dia2);
-        //printf("Frequency 3 Expected:%.0f\nFrequency 3 obtain:%.0f\n\n",(1.0f/(((float)period3/1000.0f))),dia3);
+        case number:
+            base->data = malloc(sizeof(float));
+            *(float*)base->data = 0.0f;
+            break;
+        default:
+            break;
+    }
+    return base;
+}
 
-        // period += 10;
-        // Teste->timeout=period;
-        // if(period > 1000)
-        // {
-        //     period = 1;
-        // }
+void sensor_change_data(Sensor sens,void *data){
 
-        dia = 0.0f;
-        dia2 = 0.0f;
-        dia3 = 0.0f;
+    switch(sens->internal_type)
+    {
+        case number:
+            sens->data = data;
+            break;
+        default:
+            break;
+    }
+}
 
-        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+void sensor_run(Sensor sens){
+
+    xTaskCreate(&base_sensor_task, sens->Id, 4096, sens, 2, NULL);
+}
+
+void sensor_end(Sensor sens){
+
+    free(sens->data);
+    free(sens);
+}
+
+/******************************************
+***************** Device ******************
+******************************************/
+
+Device device_init( const char      *Id           ,
+                    const char      *Name         ,
+                    const char      *Classe       ,
+                    const char      *Description  ,
+                    const char      *Login        ,
+                    const char      *Password     ){
+    
+    Device base = (Device)malloc(sizeof(Dev));
+
+    base->Id = Id;
+    base->Name = Name;
+    base->Classe = Classe;
+    base->Description = Description;
+    base->Login = Login;
+    base->Password = Password;
+    base->dispnumb = 0;
+    base->Disps = malloc(1 * sizeof(void *));
+
+    return base;
+}
+
+void device_add_sensor(Device devi,Sensor sens){
+
+    devi->dispnumb += 1;
+    void **ndisps = malloc(devi->dispnumb * sizeof(void *));
+
+    for(int i =0; i<(devi->dispnumb - 1);i++)
+    {
+        ndisps[i] = devi->Disps[i];
+    }
+
+    free(devi->Disps);
+
+    ndisps[devi->dispnumb - 1] = sens;
+    devi->Disps = ndisps;
+}
+
+void device_run(Device devi){
+    for(int i =0;i<devi->dispnumb;i++)
+    {
+        sensor_run((Sensor)(devi->Disps[i]));
     }
 }
