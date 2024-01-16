@@ -58,6 +58,7 @@ void app_main(void)
     /************************
             Get Time
     ************************/
+   
     clock_start()
     
     //const char *tempoatual = clock_get_time();

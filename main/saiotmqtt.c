@@ -1,5 +1,5 @@
-#ifndef MQTT_H
-#define MQTT_H
+#ifndef SAIOTMQTT_H
+#define SAIOTMQTT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,11 +29,8 @@ extern "C" {
 
 static const char *TAG = "MQTT101";
 
-uint32_t velocity = 150;
-uint32_t velocity2 = 500;
-
-char read_topic[150] = {0};
-char read_data[150] = {0};
+static char read_topic[150] = {0};
+static char read_data[150] = {0};
 
 static void log_error_if_nonzero(const char *message, int error_code)
 {
@@ -52,7 +49,7 @@ static void log_error_if_nonzero(const char *message, int error_code)
  * @param event_id The id for the received event.
  * @param event_data The data for the event, esp_mqtt_event_handle_t.
  */
-static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
+static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32 "", base, event_id);
     esp_mqtt_event_handle_t event = event_data;
@@ -119,7 +116,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     }
 }
 
-static esp_mqtt_client_handle_t mqtt_app_start(void)
+static esp_mqtt_client_handle_t saiot_mqtt_app_start(void)
 {
 	esp_mqtt_client_config_t mqtt_cfg = {
         .broker.address.uri = BROKER_URL_ADD,
