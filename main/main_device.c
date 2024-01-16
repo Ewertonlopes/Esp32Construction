@@ -58,7 +58,7 @@ void app_main(void)
     /************************
             Get Time
     ************************/
-   
+
     clock_start()
     
     //const char *tempoatual = clock_get_time();
@@ -67,12 +67,10 @@ void app_main(void)
         Connect to MQTT
     ************************/
 
-    /************************
-        Connect to SAIOT
-    ************************/
+    esp_mqtt_client_handle_t mclient = saiot_mqtt_app_start(B_Teste->id,B_Teste->email,B_Teste->password);
 
     /************************
-        Run Every Struct
+        INTEGRATION HELL
     ************************/
 
     //device_run(B_Teste);

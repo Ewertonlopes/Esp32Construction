@@ -1,33 +1,6 @@
-#ifndef SAIOTMQTT_H
-#define SAIOTMQTT_H
+#include "saiotmqtt.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <stdio.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
-#include "esp_wifi.h"
-#include "esp_system.h"
-#include "nvs_flash.h"
-#include "esp_event.h"
-#include "esp_netif.h"
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
-#include "freertos/queue.h"
-
-#include "lwip/sockets.h"
-#include "lwip/dns.h"
-#include "lwip/netdb.h"
-
-#include "esp_log.h"
-#include "mqtt_client.h"
-
-static const char *TAG = "MQTT101";
+static const char *MQTTAG = "MQTT101";
 
 static char read_topic[150] = {0};
 static char read_data[150] = {0};
@@ -35,7 +8,7 @@ static char read_data[150] = {0};
 static void log_error_if_nonzero(const char *message, int error_code)
 {
     if (error_code != 0) {
-        ESP_LOGE(TAG, "Last error %s: 0x%x", message, error_code);
+        ESP_LOGE(MQTTAG, "Last error %s: 0x%x", message, error_code);
     }
 }
 
@@ -51,37 +24,37 @@ static void log_error_if_nonzero(const char *message, int error_code)
  */
 static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
-    ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32 "", base, event_id);
+    ESP_LOGD(MQTTAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32 "", base, event_id);
     esp_mqtt_event_handle_t event = event_data;
     esp_mqtt_client_handle_t client = event->client;
     int msg_id;
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
-        ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+        ESP_LOGI(MQTTAG, "MQTT_EVENT_CONNECTED");
         msg_id = esp_mqtt_client_subscribe(client, "a77033d1-e4f3-47bd-9972-5d2cefdf5a4f/message", 0);
-        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+        ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
         msg_id = esp_mqtt_client_subscribe(client, "a77033d1-e4f3-47bd-9972-5d2cefdf5a4f/config", 0);
-        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+        ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
         msg_id = esp_mqtt_client_subscribe(client, "a77033d1-e4f3-47bd-9972-5d2cefdf5a4f/act", 0);
-        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+        ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_DISCONNECTED:
-        ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
+        ESP_LOGI(MQTTAG, "MQTT_EVENT_DISCONNECTED");
         break;
 
     case MQTT_EVENT_SUBSCRIBED:
-        ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
+        ESP_LOGI(MQTTAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
         msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
-        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+        ESP_LOGI(MQTTAG, "sent publish successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
-        ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
+        ESP_LOGI(MQTTAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
         break;
     case MQTT_EVENT_PUBLISHED:
-        ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+        ESP_LOGI(MQTTAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
         break;
     case MQTT_EVENT_DATA:
-        ESP_LOGI(TAG, "MQTT_EVENT_DATA");
+        ESP_LOGI(MQTTAG, "MQTT_EVENT_DATA");
         printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
         printf("DATA=%.*s\r\n", event->data_len, event->data);
 
@@ -101,28 +74,28 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
         }
         break;
     case MQTT_EVENT_ERROR:
-        ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
+        ESP_LOGI(MQTTAG, "MQTT_EVENT_ERROR");
         if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT) {
             log_error_if_nonzero("reported from esp-tls", event->error_handle->esp_tls_last_esp_err);
             log_error_if_nonzero("reported from tls stack", event->error_handle->esp_tls_stack_err);
             log_error_if_nonzero("captured as transport's socket errno",  event->error_handle->esp_transport_sock_errno);
-            ESP_LOGI(TAG, "Last errno string (%s)", strerror(event->error_handle->esp_transport_sock_errno));
+            ESP_LOGI(MQTTAG, "Last errno string (%s)", strerror(event->error_handle->esp_transport_sock_errno));
 
         }
         break;
     default:
-        ESP_LOGI(TAG, "Other event id:%d", event->event_id);
+        ESP_LOGI(MQTTAG, "Other event id:%d", event->event_id);
         break;
     }
 }
 
-static esp_mqtt_client_handle_t saiot_mqtt_app_start(void)
+esp_mqtt_client_handle_t saiot_mqtt_app_start(const char *email, const char *password, const char* id)
 {
 	esp_mqtt_client_config_t mqtt_cfg = {
-        .broker.address.uri = BROKER_URL_ADD,
-        .credentials.username = "saiotect@gmail.com",
-        .credentials.authentication.password = "@2345678",
-        .credentials.client_id="a77033d1-e4f3-47bd-9972-5d2cefdf5a4f"
+        .broker.address.uri = BROKER_ADDR,
+        .credentials.username = email,
+        .credentials.authentication.password = password,
+        .credentials.client_id=id
     };
 
 
@@ -132,10 +105,3 @@ static esp_mqtt_client_handle_t saiot_mqtt_app_start(void)
     esp_mqtt_client_start(assclient);   
     return assclient;
 }
-
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
