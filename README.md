@@ -4,4 +4,9 @@
 
 # Changelog
 
+- Struct Saiot
+- Sensor
+- Wifi
+- MQTT
+
 Added Base struct
