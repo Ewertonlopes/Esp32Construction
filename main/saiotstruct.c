@@ -51,7 +51,7 @@ Sensor sensor_init( const char      *Id           ,
 
     switch(internal_type)
     {
-        case number:
+        case sensor_number:
             base->data = malloc(sizeof(float));
             *(float*)base->data = 0.0f;
             break;
@@ -65,7 +65,7 @@ void sensor_change_data(Sensor sens,void *data){
 
     switch(sens->internal_type)
     {
-        case number:
+        case sensor_number:
             sens->data = data;
             break;
         default:

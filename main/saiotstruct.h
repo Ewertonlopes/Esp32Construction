@@ -21,13 +21,13 @@ enum dispType {
 };
 
 enum sensorType {
-    number,
-    matrix
+    sensor_number,
+    sensor_matrix
 };
 
 enum ActuatorType {
-    number,
-    matrix
+    act_number,
+    act_matrix
 };
 
 typedef struct {

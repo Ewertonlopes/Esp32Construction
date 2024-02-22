@@ -10,8 +10,10 @@
 #include <esp_event.h>
 #include <nvs_flash.h>
 
-#include "saiotprovision.h"
 #include "saiotstruct.h"
+#include "saiotprovision.h"
+#include "saiotclock.h"
+#include "saiotmqtt.h"
 
 #define PROV_TRANSPORT_SOFTAP   "softap"
 
@@ -43,7 +45,7 @@ void app_main(void)
         Create Every Struct
     ************************/
 
-    Sensor Teste = sensor_init("SupaSens","Sensor de Teste","Teste",300,number,callback);
+    Sensor Teste = sensor_init("SupaSens","Sensor de Teste","Teste",300,sensor_number,callback);
     Device B_Teste = device_init("ID0001","Main Device","Teste","Um device de testes","teste@teste.com","0123456789");
     device_add_sensor(B_Teste,Teste);
 
@@ -59,7 +61,7 @@ void app_main(void)
             Get Time
     ************************/
 
-    clock_start()
+    clock_start();
     
     //const char *tempoatual = clock_get_time();
     
@@ -67,7 +69,7 @@ void app_main(void)
         Connect to MQTT
     ************************/
 
-    esp_mqtt_client_handle_t mclient = saiot_mqtt_app_start(B_Teste->id,B_Teste->email,B_Teste->password);
+    esp_mqtt_client_handle_t mclient = saiot_mqtt_app_start(B_Teste->Id,B_Teste->Login,B_Teste->Password);
 
     /************************
         INTEGRATION HELL

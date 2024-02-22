@@ -25,15 +25,11 @@ extern "C" {
 #include "lwip/netdb.h"
 
 #include "esp_log.h"
+#include "mqtt_client.h"
 
 #define BROKER_ADDR "mqtt://192.168.0.5:1883"
 
-static void log_error_if_nonzero(const char *message, int error_code);
-
-static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data);
-
-static esp_mqtt_client_handle_t saiot_mqtt_app_start(void);
-
+esp_mqtt_client_handle_t saiot_mqtt_app_start(const char *email, const char *password, const char* id);
 
 #ifdef __cplusplus
 }

@@ -2,22 +2,51 @@
 
 static const char *timeTAG = "RTC Module";
 
-RTC_DATA_ATTR int boot_count = 0;
+int boot_count = 0;
 
 static time_t saiotnow;
 static struct tm saiottimeinfo;
 
-void sntp_sync_time(struct timeval *tv)
+
+static void time_sync_notification_cb(struct timeval *tv)
+{
+    ESP_LOGI(timeTAG, "Notification of a time synchronization event");
+}
+
+static void clock_initialize_sntp(void)
+{
+    ESP_LOGI(timeTAG, "Initializing SNTP");
+    esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    esp_sntp_setservername(0, "pool.ntp.org");
+    esp_sntp_set_time_sync_notification_cb(time_sync_notification_cb);
+
+    esp_sntp_init();
+}
+
+static void clock_obtain_time(void)
+{
+    clock_initialize_sntp();
+
+    // wait for time to be set
+    time_t now = 0;
+    struct tm timeinfo = { 0 };
+    int retry = 0;
+    const int retry_count = 10;
+    while (sntp_get_sync_status() == SNTP_SYNC_STATUS_RESET && ++retry < retry_count) {
+        ESP_LOGI(timeTAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+    }
+    time(&now);
+    localtime_r(&now, &timeinfo);
+}
+
+void clock_sntp_sync_time(struct timeval *tv)
 {
    settimeofday(tv, NULL);
    ESP_LOGI(timeTAG, "Time is synchronized from custom code");
    sntp_set_sync_status(SNTP_SYNC_STATUS_COMPLETED);
 }
 
-void time_sync_notification_cb(struct timeval *tv)
-{
-    ESP_LOGI(timeTAG, "Notification of a time synchronization event");
-}
 
 void clock_start(void)
 {
@@ -46,29 +75,3 @@ bool clock_get_time(char *time_buf)
     return true;
 }
 
-void clock_obtain_time(void)
-{
-    clock_initialize_sntp();
-
-    // wait for time to be set
-    time_t now = 0;
-    struct tm timeinfo = { 0 };
-    int retry = 0;
-    const int retry_count = 10;
-    while (sntp_get_sync_status() == SNTP_SYNC_STATUS_RESET && ++retry < retry_count) {
-        ESP_LOGI(timeTAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
-    }
-    time(&now);
-    localtime_r(&now, &timeinfo);
-}
-
-static void clock_initialize_sntp(void)
-{
-    ESP_LOGI(timeTAG, "Initializing SNTP");
-    esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    esp_sntp_setservername(0, "pool.ntp.org");
-    esp_sntp_set_time_sync_notification_cb(time_sync_notification_cb);
-
-    esp_sntp_init();
-}
