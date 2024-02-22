@@ -20,12 +20,12 @@ extern RTC_DATA_ATTR int boot_count;
 void sntp_sync_time(struct timeval *tv);
 void time_sync_notification_cb(struct timeval *tv);
 
-void clock_start(void)
-char *clock_get_time(void)
+void clock_start(void);
+bool clock_get_time(void);
 
 static void clock_obtain_time(void);
 
-static void clock_initialize_sntp(void)
+static void clock_initialize_sntp(void);
 
 #ifdef __cplusplus
 }

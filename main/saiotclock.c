@@ -38,18 +38,17 @@ void clock_start(void)
     tzset();
 }
 
-char *clock_get_time(void)
+bool clock_get_time(char *time_buf)
 {
-    char strftime_buf[64];
     time(&saiotnow);
     localtime_r(&saiotnow, &saiottimeinfo);
-    strftime(strftime_buf, sizeof(strftime_buf), "%d-%m-%Y %H-%M-%S", &saiottimeinfo);
-    return strftime_buf;
+    strftime(time_buf, sizeof(time_buf), "%d-%m-%Y %H-%M-%S", &saiottimeinfo);
+    return true;
 }
 
 void clock_obtain_time(void)
 {
-    time_initialize_sntp();
+    clock_initialize_sntp();
 
     // wait for time to be set
     time_t now = 0;
