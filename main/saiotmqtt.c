@@ -4,7 +4,7 @@ static const char *MQTTAG = "MQTT101";
 
 static char read_topic[150] = {0};
 static char read_data[150] = {0};
-
+float velocity,velocity2;
 static void log_error_if_nonzero(const char *message, int error_code)
 {
     if (error_code != 0) {
@@ -101,7 +101,7 @@ esp_mqtt_client_handle_t saiot_mqtt_app_start(const char *email, const char *pas
 
     esp_mqtt_client_handle_t assclient = esp_mqtt_client_init(&mqtt_cfg);
 
-    esp_mqtt_client_register_event(assclient, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
+    esp_mqtt_client_register_event(assclient, ESP_EVENT_ANY_ID, saiot_mqtt_event_handler, NULL);
     esp_mqtt_client_start(assclient);   
     return assclient;
 }
