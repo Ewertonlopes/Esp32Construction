@@ -73,6 +73,11 @@ void sensor_change_data(Sensor sens,void *data){
     }
 }
 
+void sensor_add_mqtt_client(Sensor sens, esp_mqtt_client_handle_t mqttclient)
+{
+    sens->mqttclient = mqttclient;
+}
+
 void sensor_run(Sensor sens){
 
     xTaskCreate(&base_sensor_task, sens->Id, 4096, sens, 2, NULL);
@@ -111,6 +116,7 @@ Device device_init( const char      *Id           ,
 
 void device_add_sensor(Device devi,Sensor sens){
 
+    sensor_add_mqtt_client(sens,devi->mqttclient);
     devi->dispnumb += 1;
     void **ndisps = malloc(devi->dispnumb * sizeof(void *));
 
@@ -123,6 +129,11 @@ void device_add_sensor(Device devi,Sensor sens){
 
     ndisps[devi->dispnumb - 1] = sens;
     devi->Disps = ndisps;
+}
+
+void device_add_mqtt_client(Device devi, esp_mqtt_client_handle_t mqttclient)
+{
+    devi->mqttclient = mqttclient;
 }
 
 void device_run(Device devi){

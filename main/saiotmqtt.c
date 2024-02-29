@@ -4,7 +4,7 @@ static const char *MQTTAG = "MQTT101";
 
 static char read_topic[150] = {0};
 static char read_data[150] = {0};
-float velocity,velocity2;
+long velocity,velocity2;
 static void log_error_if_nonzero(const char *message, int error_code)
 {
     if (error_code != 0) {
@@ -43,9 +43,6 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
         break;
 
     case MQTT_EVENT_SUBSCRIBED:
-        ESP_LOGI(MQTTAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
-        msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
-        ESP_LOGI(MQTTAG, "sent publish successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
@@ -55,23 +52,23 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
         break;
     case MQTT_EVENT_DATA:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_DATA");
-        printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-        printf("DATA=%.*s\r\n", event->data_len, event->data);
+        // printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
+        // printf("DATA=%.*s\r\n", event->data_len, event->data);
 
-        sprintf(read_topic, "%.*s", event->topic_len, event->topic);
-        sprintf(read_data, "%.*s", event->data_len, event->data);
+        // sprintf(read_topic, "%.*s", event->topic_len, event->topic);
+        // sprintf(read_data, "%.*s", event->data_len, event->data);
 
-        if(strcmp(read_topic, "/topic/qos0") == 0) 
-        {
-            long receive = atol(read_data);
-            velocity = receive;
-        }
-        else if(strcmp(read_topic, "/topic/qos1") == 0)
-        {
-            long receive = atol(read_data);
-            velocity2 = receive;
+        // if(strcmp(read_topic, "/topic/qos0") == 0) 
+        // {
+        //     long receive = atol(read_data);
+        //     velocity = receive;
+        // }
+        // else if(strcmp(read_topic, "/topic/qos1") == 0)
+        // {
+        //     long receive = atol(read_data);
+        //     velocity2 = receive;
 
-        }
+        // }
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_ERROR");

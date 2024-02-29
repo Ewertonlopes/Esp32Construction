@@ -8,6 +8,8 @@ extern "C" {
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "mqtt_client.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -36,6 +38,8 @@ typedef struct {
     const char *type;
     enum sensorType internal_type;
     enum dispType disp;
+
+    esp_mqtt_client_handle_t mqttclient;
     
     int timeout;
 
@@ -66,6 +70,8 @@ typedef struct {
     const char *Password;
 
     int dispnumb;
+
+    esp_mqtt_client_handle_t mqttclient;
     void *(*Disps);
 } Dev, *Device;
 
