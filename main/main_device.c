@@ -19,21 +19,21 @@
 
 static const char *TAG = "MAIN";
 
-float dia = 0;
+int dia = 0;
 
 void *callback()
 {
-    float *teste;
+    int *teste;
 
-    teste = (float*)malloc(sizeof(float));
+    teste = (int*)malloc(sizeof(int));
 
     *teste = dia;
 
-    dia = dia + 1.0f;
+    dia = dia + 1;
 
     if(dia>30)
     {
-        dia = 0.0f;
+        dia = 0;
     }
 
     return teste;     
@@ -46,7 +46,8 @@ void app_main(void)
     ************************/
 
     Sensor Teste = sensor_init("SupaSens","Sensor de Teste","number",300,sensor_number,callback);
-    Device B_Teste = device_init("273e255d-125b-47ca-979c-66b29263fd35","Main Device","Teste","Um device de testes","saiotect@gmail.com","012345678");
+    Device B_Teste = device_init("nada","Main Device","Teste","Um device de testes","saiotect@gmail.com","012345678");
+    //273e255d-125b-47ca-979c-66b29263fd35
     device_add_sensor(B_Teste,Teste);
 
     /************************
@@ -75,7 +76,7 @@ void app_main(void)
         INTEGRATION HELL
     ************************/
 
-    device_run(B_Teste);
+    // device_run(B_Teste);
     // char tempoaa[60];
     // while(1)
     // {

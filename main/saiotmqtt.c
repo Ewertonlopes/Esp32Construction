@@ -31,11 +31,12 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_CONNECTED");
-        msg_id = esp_mqtt_client_subscribe(client, "a77033d1-e4f3-47bd-9972-5d2cefdf5a4f/message", 0);
+        msg_id = esp_mqtt_client_subscribe(client, "nada/message", 0);
         ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
-        msg_id = esp_mqtt_client_subscribe(client, "a77033d1-e4f3-47bd-9972-5d2cefdf5a4f/config", 0);
+        msg_id = esp_mqtt_client_publish(client, "nada/message", "75", 0, 1, 0);
+        msg_id = esp_mqtt_client_subscribe(client, "nada/config", 0);
         ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
-        msg_id = esp_mqtt_client_subscribe(client, "a77033d1-e4f3-47bd-9972-5d2cefdf5a4f/act", 0);
+        msg_id = esp_mqtt_client_subscribe(client, "nada/act", 0);
         ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_DISCONNECTED:
@@ -43,6 +44,7 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
         break;
 
     case MQTT_EVENT_SUBSCRIBED:
+        ESP_LOGI(MQTTAG, "Subscribed");
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
@@ -52,8 +54,8 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
         break;
     case MQTT_EVENT_DATA:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_DATA");
-        // printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-        // printf("DATA=%.*s\r\n", event->data_len, event->data);
+        printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
+        printf("DATA=%.*s\r\n", event->data_len, event->data);
 
         // sprintf(read_topic, "%.*s", event->topic_len, event->topic);
         // sprintf(read_data, "%.*s", event->data_len, event->data);
