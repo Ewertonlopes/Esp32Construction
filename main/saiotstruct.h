@@ -9,6 +9,7 @@ extern "C" {
 #include "freertos/task.h"
 
 #include "mqtt_client.h"
+#include "saiotjson.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -33,6 +34,7 @@ enum ActuatorType {
 };
 
 typedef struct {
+    const char *fId;
     const char *Id;
     const char *Name;
     const char *type;
@@ -84,6 +86,7 @@ Sensor sensor_init( const char      *Id           ,
                     enum sensorType internal_type ,
                     sensorCallback  callback);
 void sensor_change_data(Sensor sens,void *data);
+void sensor_add_mqtt_client(Sensor sens, esp_mqtt_client_handle_t mqttclient);
 void sensor_run(Sensor sens);
 void sensor_end(Sensor sens);
 

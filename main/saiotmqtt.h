@@ -27,7 +27,7 @@ extern "C" {
 #include "esp_log.h"
 #include "mqtt_client.h"
 
-#define BROKER_ADDR "mqtt://192.168.0.5:1883"
+#define BROKER_ADDR "mqtt://dev.saiot2.ect.ufrn.br:8000"
 
 esp_mqtt_client_handle_t saiot_mqtt_app_start(const char *email, const char *password, const char* id);
 

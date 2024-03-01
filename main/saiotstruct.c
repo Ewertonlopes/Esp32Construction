@@ -20,12 +20,20 @@ void base_sensor_task(void * pvParams){
   Sensor Sens = (Sensor) pvParams;
 //   TickType_t xFrequency = pdMS_TO_TICKS(Sens->timeout);
   xLastWakeTime = xTaskGetTickCount();
+  char *payload = json_create_payload(Sens->Id,Sens->data);
+  
+//   char topic[50];
+//   sprintf(topic,"%s%s","",Sens->fId);
 
   while (1) 
   {
+    printf("%s",payload);
+    int msg_id = esp_mqtt_client_publish(Sens->mqttclient, "measurements/273e255d-125b-47ca-979c-66b29263fd35", payload, 0, 1, 0);
     free(Sens->data);
     Sens->data = Sens->callback();
     //sensor_print(Sens);
+    json_free_buffer(payload);
+    payload = json_create_payload(Sens->Id,Sens->data);
     vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Sens->timeout));
   }
 }
@@ -117,6 +125,7 @@ Device device_init( const char      *Id           ,
 void device_add_sensor(Device devi,Sensor sens){
 
     sensor_add_mqtt_client(sens,devi->mqttclient);
+    sens->fId = devi->Id;
     devi->dispnumb += 1;
     void **ndisps = malloc(devi->dispnumb * sizeof(void *));
 
@@ -129,11 +138,6 @@ void device_add_sensor(Device devi,Sensor sens){
 
     ndisps[devi->dispnumb - 1] = sens;
     devi->Disps = ndisps;
-}
-
-void device_add_mqtt_client(Device devi, esp_mqtt_client_handle_t mqttclient)
-{
-    devi->mqttclient = mqttclient;
 }
 
 void device_run(Device devi){
