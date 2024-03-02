@@ -31,13 +31,12 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_CONNECTED");
-        msg_id = esp_mqtt_client_subscribe(client, "nada/message", 0);
-        ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
-        msg_id = esp_mqtt_client_publish(client, "nada/message", "75", 0, 1, 0);
-        msg_id = esp_mqtt_client_subscribe(client, "nada/config", 0);
-        ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
-        msg_id = esp_mqtt_client_subscribe(client, "nada/act", 0);
-        ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
+        // msg_id = esp_mqtt_client_subscribe(client, "273e255d-125b-47ca-979c-66b29263fd35/message", 0);
+        // ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
+        // msg_id = esp_mqtt_client_subscribe(client, "273e255d-125b-47ca-979c-66b29263fd35/config", 0);
+        // ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
+        // msg_id = esp_mqtt_client_subscribe(client, "273e255d-125b-47ca-979c-66b29263fd35/act", 0);
+        // ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_DISCONNECTED");
@@ -79,7 +78,6 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
             log_error_if_nonzero("reported from tls stack", event->error_handle->esp_tls_stack_err);
             log_error_if_nonzero("captured as transport's socket errno",  event->error_handle->esp_transport_sock_errno);
             ESP_LOGI(MQTTAG, "Last errno string (%s)", strerror(event->error_handle->esp_transport_sock_errno));
-
         }
         break;
     default:
@@ -90,6 +88,7 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
 
 esp_mqtt_client_handle_t saiot_mqtt_app_start(const char *email, const char *password, const char* id)
 {
+    ESP_LOGI(MQTTAG,"%s\n%s\n%s",email,password,id);
 	esp_mqtt_client_config_t mqtt_cfg = {
         .broker.address.uri = BROKER_ADDR,
         .credentials.username = email,
