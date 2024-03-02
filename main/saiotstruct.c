@@ -20,18 +20,22 @@ void base_sensor_task(void * pvParams){
   Sensor Sens = (Sensor) pvParams;
 //   TickType_t xFrequency = pdMS_TO_TICKS(Sens->timeout);
   xLastWakeTime = xTaskGetTickCount();
-  char *payload = json_create_payload(Sens->Id,*(int*)Sens->data);
+  char *payload = json_create_payload(Sens->Id,0);
   
 //   char topic[50];
 //   sprintf(topic,"%s%s","",Sens->fId);
-
+  int teste = 0;
   while (1){
     int msg_id = esp_mqtt_client_publish(Sens->mqttclient, "measurements/273e255d-125b-47ca-979c-66b29263fd35", payload, 0, 1, 0);
-    free(Sens->data);
-    Sens->data = Sens->callback();
+    
+    if(teste++>30)
+    {
+        teste = 0;
+    }
+
     //sensor_print(Sens);
     json_free_buffer(payload);
-    payload = json_create_payload(Sens->Id,*(int*)Sens->data);
+    payload = json_create_payload(Sens->Id,teste);
     vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Sens->timeout));
   }
 }
@@ -86,7 +90,7 @@ void sensor_add_mqtt_client(Sensor sens, esp_mqtt_client_handle_t mqttclient)
 
 void sensor_run(Sensor sens){
 
-    xTaskCreate(&base_sensor_task, sens->Id, 4096, sens, 2, NULL);
+    xTaskCreate(&base_sensor_task, sens->Id, 4096, sens, 10, NULL);
 }
 
 void sensor_end(Sensor sens){

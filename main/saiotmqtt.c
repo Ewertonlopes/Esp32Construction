@@ -31,12 +31,12 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_CONNECTED");
-        // msg_id = esp_mqtt_client_subscribe(client, "273e255d-125b-47ca-979c-66b29263fd35/message", 0);
-        // ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
-        // msg_id = esp_mqtt_client_subscribe(client, "273e255d-125b-47ca-979c-66b29263fd35/config", 0);
-        // ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
-        // msg_id = esp_mqtt_client_subscribe(client, "273e255d-125b-47ca-979c-66b29263fd35/act", 0);
-        // ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
+        msg_id = esp_mqtt_client_subscribe(client, "273e255d-125b-47ca-979c-66b29263fd35/message", 0);
+        ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
+        msg_id = esp_mqtt_client_subscribe(client, "273e255d-125b-47ca-979c-66b29263fd35/config", 0);
+        ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
+        msg_id = esp_mqtt_client_subscribe(client, "273e255d-125b-47ca-979c-66b29263fd35/act", 0);
+        ESP_LOGI(MQTTAG, "sent subscribe successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(MQTTAG, "MQTT_EVENT_DISCONNECTED");
@@ -49,12 +49,12 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
         ESP_LOGI(MQTTAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
         break;
     case MQTT_EVENT_PUBLISHED:
-        ESP_LOGI(MQTTAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+        ESP_LOGI(MQTTAG, "%d", event->msg_id);
         break;
     case MQTT_EVENT_DATA:
-        ESP_LOGI(MQTTAG, "MQTT_EVENT_DATA");
-        printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-        printf("DATA=%.*s\r\n", event->data_len, event->data);
+        // ESP_LOGI(MQTTAG, "MQTT_EVENT_DATA");
+        // printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
+        // printf("DATA=%.*s\r\n", event->data_len, event->data);
 
         // sprintf(read_topic, "%.*s", event->topic_len, event->topic);
         // sprintf(read_data, "%.*s", event->data_len, event->data);
@@ -86,9 +86,7 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
     }
 }
 
-esp_mqtt_client_handle_t saiot_mqtt_app_start(const char *email, const char *password, const char* id)
-{
-    ESP_LOGI(MQTTAG,"%s\n%s\n%s",email,password,id);
+esp_mqtt_client_handle_t saiot_mqtt_app_start(const char *email, const char *password, const char* id){
 	esp_mqtt_client_config_t mqtt_cfg = {
         .broker.address.uri = BROKER_ADDR,
         .credentials.username = email,
