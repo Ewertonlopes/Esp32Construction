@@ -5,7 +5,7 @@ import json
 
 # MQTT Broker settings
 broker_address = "dev.saiot2.ect.ufrn.br"
-port = 2024
+port = 8000
 topic = "measurements/273e255d-125b-47ca-979c-66b29263fd35"
 client_id = "273e255d-125b-47ca-979c-66b29263fd35"
 username = "saiotect@gmail.com"
