@@ -45,7 +45,7 @@ def send_mqtt_messages():
             print(f"Sent: {json_message}")
 
             # Adjust the sleep duration for variable frequency
-            time.sleep(1/6)
+            time.sleep(1)
 
     except KeyboardInterrupt:
         print("Script terminated by user.")
