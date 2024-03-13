@@ -45,7 +45,7 @@ void app_main(void)
         Create Every Struct
     ************************/
 
-    Sensor Teste = sensor_init("SupaSens","Sensor de Teste","number",1000,sensor_number,callback);
+    Sensor Teste = sensor_init("SupaSens","Sensor de Teste","number",500,sensor_number,callback);
     Device B_Teste = device_init("273e255d-125b-47ca-979c-66b29263fd35","Main Device","Teste","Um device de testes","saiotect@gmail.com","@2345678");
     //273e255d-125b-47ca-979c-66b29263fd35
     device_add_sensor(B_Teste,Teste);

@@ -91,7 +91,8 @@ esp_mqtt_client_handle_t saiot_mqtt_app_start(const char *email, const char *pas
         .broker.address.uri = BROKER_ADDR,
         .credentials.username = email,
         .credentials.authentication.password = password,
-        .credentials.client_id=id
+        .credentials.client_id=id,
+        .task.priority=10
     };
 
 
