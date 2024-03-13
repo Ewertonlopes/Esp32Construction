@@ -3,11 +3,13 @@
 
 static const char *sTAG = "Struct Module";
 
+SemaphoreHandle_t xMutex = NULL;
+
 void sensor_print(Sensor sens){
-    printf("Id:%s\nNome:%s\nType:%s\nData:%.2f\n\n",sens->Id,
+    printf("Id:%s\nNome:%s\nType:%s\nData:%d\n\n",sens->Id,
                                                     sens->Name,
                                                     sens->type,
-                                                    *(float*)sens->data);
+                                                    *(int*)sens->data);
 }
 
 /******************************************
@@ -25,18 +27,25 @@ void base_sensor_task(void * pvParams){
 //   char topic[50];
 //   sprintf(topic,"%s%s","",Sens->fId);
   int teste = 0;
+  xMutex = xSemaphoreCreateMutex();
   while (1){
-    int msg_id = esp_mqtt_client_publish(Sens->mqttclient, "measurements/273e255d-125b-47ca-979c-66b29263fd35", payload, 0, 1, 0);
-    
-    if(teste++>30)
+    if(xMutex != NULL)
     {
-        teste = 0;
+            xSemaphoreTake( xMutex, portMAX_DELAY );
+    {
+        int msg_id = esp_mqtt_client_publish(Sens->mqttclient, "measurements/273e255d-125b-47ca-979c-66b29263fd35", payload, 0, 0, 0);
     }
-
-    //sensor_print(Sens);
-    json_free_buffer(payload);
-    payload = json_create_payload(Sens->Id,teste);
-    vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Sens->timeout));
+    xSemaphoreGive( xMutex );
+        if(teste++>30)
+        {
+            teste = 0;
+        }
+        // printf("%u\n",teste);
+        // sensor_print(Sens);
+        json_free_buffer(payload);
+        payload = json_create_payload(Sens->Id,teste);
+        vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Sens->timeout));
+    }
   }
 }
 
@@ -90,7 +99,7 @@ void sensor_add_mqtt_client(Sensor sens, esp_mqtt_client_handle_t mqttclient)
 
 void sensor_run(Sensor sens){
 
-    xTaskCreate(&base_sensor_task, sens->Id, 4096, sens, 10, NULL);
+    xTaskCreate(&base_sensor_task, sens->Id, 4096, sens, 1, NULL);
 }
 
 void sensor_end(Sensor sens){

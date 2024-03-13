@@ -149,7 +149,7 @@ void saiot_provision_start(void)
 
     bool provisioned = false;
 
-    //wifi_prov_mgr_reset_provisioning();
+    // wifi_prov_mgr_reset_provisioning();
     
     ESP_ERROR_CHECK(wifi_prov_mgr_is_provisioned(&provisioned));
 

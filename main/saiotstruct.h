@@ -13,6 +13,7 @@ extern "C" {
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "freertos/semphr.h"
 
 typedef void* (*sensorCallback)(void);
 typedef void  (*ActuatorCallback)(void*);
