@@ -3,7 +3,8 @@
 static const char *TAG_MQTT = "SUBMODULE_MQTT";
 
 esp_mqtt_client_handle_t xClientMQTT = NULL;
-SemaphoreHandle_t xMutex = NULL;
+SemaphoreHandle_t xMutexMQTT = NULL;
+bool isconnectedMQTT = false;
 
 /* 
  * @brief Função para filtrar mensagens e printar aquelas com código de erro
@@ -42,24 +43,34 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
     switch ((esp_mqtt_event_id_t)event_id) {
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG_MQTT, "MQTT_EVENT_CONNECTED");
+            isconnectedMQTT = true;
             break;
         case MQTT_EVENT_DISCONNECTED:
             ESP_LOGI(TAG_MQTT, "MQTT_EVENT_DISCONNECTED");
+            isconnectedMQTT = false;
             break;
         case MQTT_EVENT_SUBSCRIBED:
-            ESP_LOGI(TAG_MQTT, "Subscribed");
+            ESP_LOGI(TAG_MQTT, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_UNSUBSCRIBED:
             ESP_LOGI(TAG_MQTT, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_PUBLISHED:
-            ESP_LOGI(TAG_MQTT, "%d", event->msg_id);
+            ESP_LOGI(TAG_MQTT, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
             break;
         case MQTT_EVENT_DATA:
             
+            char topic_string[MAX_TOPIC_LENGTH];
+            char data_string[MAX_MESSAGE_LENGTH];
+
             ESP_LOGI(TAG_MQTT, "MQTT_EVENT_DATA");
-            printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-            printf("DATA=%.*s\r\n", event->data_len, event->data);
+            
+            strncpy(topic_string, event->topic, event->topic_len);
+            strncpy(data_string, event->data, event->data_len);
+
+            ESP_LOGI(TAG_MQTT,"TOPIC=%s\r\n", topic_string);
+            ESP_LOGI(TAG_MQTT,"DATA=%s\r\n", data_string);
+
             break;
         case MQTT_EVENT_ERROR:
             ESP_LOGI(TAG_MQTT, "MQTT_EVENT_ERROR");
