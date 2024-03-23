@@ -13,6 +13,7 @@ extern "C" {
 
 #include "esp_system.h" 
 #include "esp_wifi.h"
+
 #include "esp_log.h"
 #include "esp_event.h"
 #include "nvs_flash.h"
@@ -24,7 +25,7 @@ extern bool isconnectedwifi;
 extern const char *wifi_ssid;
 extern const char *wifi_pass;
 
-void wifi_init();
+void wifi_connection();
 
 #ifdef __cplusplus
 }
