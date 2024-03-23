@@ -31,7 +31,7 @@ void base_sensor_task(void * pvParams){
   while (1){
     if(xMutex != NULL)
     {
-            xSemaphoreTake( xMutex, portMAX_DELAY );
+        xSemaphoreTake( xMutex, portMAX_DELAY );
     {
         // int msg_id = esp_mqtt_client_publish(Sens->mqttclient, "measurements/273e255d-125b-47ca-979c-66b29263fd35", payload, 0, 0, 0);
     }

@@ -1,11 +1,11 @@
 #include "saiotstruct.h"
 
+// static const char *TAG = "MAIN";
 
-static const char *TAG = "MAIN";
+const char *email = "email@email.com";
+const char *password = "senhateste";
+const char *id = "doadadpnzpxnczc";
 
-int dia = 0;
-
-void app_main(void)
-{
-    Sensor Teste = sensor_init("SupaSens","Sensor de Teste","number",500,sensor_number);
+void app_main(void) {
+    esp_err_t saiot_mqtt_app_start(const char *email, const char *password, const char* id);
 }
