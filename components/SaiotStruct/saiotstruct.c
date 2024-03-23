@@ -1,4 +1,3 @@
-
 #include "saiotstruct.h"
 
 static const char *TAG_STRUCT = "Struct Module";
@@ -129,7 +128,7 @@ void actuator_change_data(Actuator act,void *data){
     switch(act->internal_type)
     {
         case act_switch:
-            *(bool*)sens->data = *(bool*)data;
+            *(bool*)act->data = *(bool*)data;
             break;
         default:
             break;
@@ -177,7 +176,7 @@ Device device_init( const char      *Id           ,
     base->Login = Login;
     base->Password = Password;
     base->dispnumb = 0;
-    for(int i=0;i<MAX_ADDONS_SIZE;i++) base->Disps[i] = NULL;
+    for(int i=0;i<MAX_ADDONS_SIZE;i++) base->Adds[i] = NULL;
 
     return base;
 }
@@ -193,7 +192,7 @@ void device_add_sensor(Device devi,Sensor sens){
     Addon base = (Addon)malloc(sizeof(Add));
     base->sensor = sens;
     base->disp = sensor;
-    devi->adds[devi->dispnumb] = base;
+    devi->Adds[devi->dispnumb] = base;
     devi->dispnumb++;
 }
 
@@ -207,6 +206,6 @@ void device_add_actuator(Device devi,Actuator act){
     Addon base = (Addon)malloc(sizeof(Add));
     base->actuator = act;
     base->disp = actuator;
-    devi->adds[devi->dispnumb] = base;
+    devi->Adds[devi->dispnumb] = base;
     devi->dispnumb++;
 }

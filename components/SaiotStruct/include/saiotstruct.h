@@ -46,10 +46,11 @@ typedef struct {
     const char *Id;
     const char *Name;
     const char *type;
-
+    enum ActuatorType internal_type;
+    
     bool changeflag;
 
-    enum ActuatorType internal_type;
+    void *data;
 } Act, *Actuator;
 
 typedef struct {
@@ -104,6 +105,7 @@ Device device_init( const char      *Id           ,
 
 void device_add_sensor(Device devi,Sensor sens);
 void device_add_actuator(Device devi,Actuator act);
+
 
 #ifdef __cplusplus
 }
