@@ -5,16 +5,17 @@
 extern "C" {
 #endif
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "esp_check.h"
+#include "esp_log.h"
 
-// typedef void* (*sensorCallback)(void);
-// typedef void  (*ActuatorCallback)(void*);
-
+#define MAX_ADDONS_SIZE 20
 
 enum dispType {
     sensor,
@@ -22,37 +23,44 @@ enum dispType {
 };
 
 enum sensorType {
-    sensor_number,
-    sensor_matrix
+    sensor_number
 };
 
-// enum ActuatorType {
-//     act_number,
-//     act_matrix
-// };
+enum ActuatorType {
+    act_switch
+};
 
 typedef struct {
-    const char *fId;
     const char *Id;
     const char *Name;
     const char *type;
     enum sensorType internal_type;
-    enum dispType disp;
 
     int timeout;
+    float deadband;
 
     void *data;
 } Sen, *Sensor;
 
-// typedef struct {
-//     const char *Id;
-//     const char *Name;
-//     const char *type;
+typedef struct {
+    const char *Id;
+    const char *Name;
+    const char *type;
 
-//     enum ActuatorType internal_type;
-//     enum dispType disp;
+    bool changeflag;
 
-// } Act, *Actuator;
+    enum ActuatorType internal_type;
+} Act, *Actuator;
+
+typedef struct {
+    enum dispType disp;
+
+    union {
+        Sensor sensor;
+        Actuator actuator;
+    };
+    
+} Add, *Addon;
 
 typedef struct {
     const char *Id;
@@ -66,14 +74,26 @@ typedef struct {
 
     int dispnumb;
 
-    void *(*Disps);
+    Addon Adds[MAX_ADDONS_SIZE];
 } Dev, *Device;
 
 Sensor sensor_init( const char      *Id           ,
                     const char      *Name         ,
                     const char      *type         ,
-                    int             timeout       , 
+                    int             timeout       ,
+                    float           deadband      ,   
                     enum sensorType internal_type);
+
+void sensor_change_data(Sensor sens,void *data);
+esp_err_t sensor_end(Sensor sens);
+
+Actuator actuator_init( const char      *Id           ,
+                        const char      *Name         ,
+                        const char      *type         ,   
+                        enum ActuatorType internal_type);
+
+void actuator_change_data(Actuator act,void *data);
+esp_err_t actuator_end(Actuator act);
 
 Device device_init( const char      *Id           ,
                     const char      *Name         ,
@@ -81,7 +101,9 @@ Device device_init( const char      *Id           ,
                     const char      *Description  ,
                     const char      *Login        ,
                     const char      *Password     );
+
 void device_add_sensor(Device devi,Sensor sens);
+void device_add_actuator(Device devi,Actuator act);
 
 #ifdef __cplusplus
 }
