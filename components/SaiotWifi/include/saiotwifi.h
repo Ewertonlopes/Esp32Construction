@@ -5,107 +5,25 @@
 extern "C" {
 #endif
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
 
-#include "esp_check.h"
+#include "esp_system.h" 
+#include "esp_wifi.h"
 #include "esp_log.h"
+#include "esp_event.h"
+#include "nvs_flash.h"
 
-#define MAX_ADDONS_SIZE 20
+#include "lwip/err.h"
+#include "lwip/sys.h"
 
-enum dispType {
-    sensor,
-    actuator
-};
+extern bool isconnectedwifi;
+extern const char *wifi_ssid;
+extern const char *wifi_pass;
 
-enum sensorType {
-    sensor_number
-};
-
-enum ActuatorType {
-    act_switch
-};
-
-typedef struct {
-    const char *Id;
-    const char *Name;
-    const char *type;
-    enum sensorType internal_type;
-
-    int timeout;
-    float deadband;
-
-    void *data;
-} Sen, *Sensor;
-
-typedef struct {
-    const char *Id;
-    const char *Name;
-    const char *type;
-    enum ActuatorType internal_type;
-    
-    bool changeflag;
-
-    void *data;
-} Act, *Actuator;
-
-typedef struct {
-    enum dispType disp;
-
-    union {
-        Sensor sensor;
-        Actuator actuator;
-    };
-    
-} Add, *Addon;
-
-typedef struct {
-    const char *Id;
-
-    const char *Name;
-    const char *Classe;
-    const char *Description;
-
-    const char *Login;
-    const char *Password;
-
-    int dispnumb;
-
-    Addon Adds[MAX_ADDONS_SIZE];
-} Dev, *Device;
-
-Sensor sensor_init( const char      *Id           ,
-                    const char      *Name         ,
-                    const char      *type         ,
-                    int             timeout       ,
-                    float           deadband      ,   
-                    enum sensorType internal_type);
-
-void sensor_change_data(Sensor sens,void *data);
-esp_err_t sensor_end(Sensor sens);
-
-Actuator actuator_init( const char      *Id           ,
-                        const char      *Name         ,
-                        const char      *type         ,   
-                        enum ActuatorType internal_type);
-
-void actuator_change_data(Actuator act,void *data);
-esp_err_t actuator_end(Actuator act);
-
-Device device_init( const char      *Id           ,
-                    const char      *Name         ,
-                    const char      *Classe       ,
-                    const char      *Description  ,
-                    const char      *Login        ,
-                    const char      *Password     );
-
-void device_add_sensor(Device devi,Sensor sens);
-void device_add_actuator(Device devi,Actuator act);
-void device_end(Device devi);
+void wifi_start();
 
 #ifdef __cplusplus
 }
