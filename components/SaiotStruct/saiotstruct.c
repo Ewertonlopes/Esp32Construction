@@ -1,6 +1,6 @@
 #include "saiotstruct.h"
 
-static const char *TAG_STRUCT = "Struct Module";
+static const char *TAG_STRUCT = "SUBMODULE_STRUCT";
 
 /*
  * @brief Inicialização de um Sensor
@@ -30,6 +30,7 @@ Sensor sensor_init( const char      *Id           ,
     base->type = type;
     base->timeout = timeout;
     base->deadband = deadband;
+    base->internal_type = internal_type;
 
     switch(internal_type)
     {
@@ -41,6 +42,7 @@ Sensor sensor_init( const char      *Id           ,
             ESP_LOGE(TAG_STRUCT, "SENSOR TYPE INVALID!!!");
             break;
     }
+    ESP_LOGI(TAG_STRUCT, "Sensor %s Loaded!!!",base->Id);
     return base;
 }
 
@@ -57,8 +59,10 @@ void sensor_change_data(Sensor sens,void *data){
     {
         case sensor_number:
             *(float*)sens->data = *(float*)data;
+            ESP_LOGD(TAG_STRUCT, "Data in sensor %s is %f", sens->Id,*(float*)sens->data);
             break;
         default:
+            ESP_LOGD(TAG_STRUCT, "No Valid sensor type");
             break;
     }
 }
@@ -102,6 +106,7 @@ Actuator actuator_init( const char      *Id           ,
     base->type = type;
 
     base->changeflag = false;
+    base->internal_type = internal_type;
 
     switch(internal_type)
     {
@@ -113,6 +118,7 @@ Actuator actuator_init( const char      *Id           ,
             ESP_LOGE(TAG_STRUCT, "INVALID ACTUATOR TYPE!!!");
             break;
     }
+    ESP_LOGI(TAG_STRUCT, "Actuator %s Loaded!!!",base->Id);
     return base;
 }
 
@@ -129,6 +135,7 @@ void actuator_change_data(Actuator act,void *data){
     {
         case act_switch:
             *(bool*)act->data = *(bool*)data;
+            ESP_LOGD(TAG_STRUCT, "Data in Actuator %s is %u",act->Id,*(bool*)act->data);
             break;
         default:
             break;
@@ -178,6 +185,8 @@ Device device_init( const char      *Id           ,
     base->dispnumb = 0;
     for(int i=0;i<MAX_ADDONS_SIZE;i++) base->Adds[i] = NULL;
 
+    ESP_LOGI(TAG_STRUCT, "Dispositive %s Loaded!!!",base->Name);
+
     return base;
 }
 
@@ -193,6 +202,7 @@ void device_add_sensor(Device devi,Sensor sens){
     base->sensor = sens;
     base->disp = sensor;
     devi->Adds[devi->dispnumb] = base;
+    ESP_LOGI(TAG_STRUCT, "Sensor %s added to Dispositive!!!", sens->Id);
     devi->dispnumb++;
 }
 
@@ -207,5 +217,24 @@ void device_add_actuator(Device devi,Actuator act){
     base->actuator = act;
     base->disp = actuator;
     devi->Adds[devi->dispnumb] = base;
+    ESP_LOGI(TAG_STRUCT, "Actuator %s added to Dispositive!!!", act->Id);
     devi->dispnumb++;
+}
+
+void device_end(Device devi){
+
+    for(int i=0;i<devi->dispnumb;i++){
+        bool isActuator = devi->Adds[i]->disp; 
+        if(isActuator){
+            actuator_end(devi->Adds[i]->actuator);
+            free(devi->Adds[i]);
+        }
+        else
+        {
+            sensor_end(devi->Adds[i]->sensor);
+            free(devi->Adds[i]);
+        }
+    }
+    free(devi);
+    ESP_LOGI(TAG_STRUCT, "Device Erased");
 }

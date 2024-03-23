@@ -105,7 +105,7 @@ Device device_init( const char      *Id           ,
 
 void device_add_sensor(Device devi,Sensor sens);
 void device_add_actuator(Device devi,Actuator act);
-
+void device_end(Device devi);
 
 #ifdef __cplusplus
 }
