@@ -9,6 +9,7 @@ extern "C" {
 #include <string.h>
 
 #include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #include "esp_system.h" 
 #include "esp_wifi.h"
@@ -23,7 +24,7 @@ extern bool isconnectedwifi;
 extern const char *wifi_ssid;
 extern const char *wifi_pass;
 
-void wifi_start();
+void wifi_init();
 
 #ifdef __cplusplus
 }
