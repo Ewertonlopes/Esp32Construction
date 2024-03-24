@@ -168,6 +168,7 @@ esp_err_t actuator_end(Actuator act){
  * @param Password senha utilizada na plataforma.
  */
 Device device_init( const char      *Id           ,
+                    const char      *Email        ,
                     const char      *Name         ,
                     const char      *Classe       ,
                     const char      *Description  ,
@@ -177,6 +178,7 @@ Device device_init( const char      *Id           ,
     Device base = (Device)malloc(sizeof(Dev));
 
     base->Id = Id;
+    base->Email = Email;
     base->Name = Name;
     base->Classe = Classe;
     base->Description = Description;

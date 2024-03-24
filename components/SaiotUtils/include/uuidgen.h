@@ -2,6 +2,9 @@
 #define UUID_GEN
 
 #include <esp_random.h>
+#include <esp_loh.h>
+
+static const char *TAG_UUID = "SUBMODULE_UUIDGENERATOR";
 
 /*
  * @brief Função auxiliar para transformar inteiros em HEX
@@ -16,6 +19,7 @@ void IntToHex(const unsigned int inInt, char *returnVar)
   for (int i = 0; i < 8; i++){
     returnVar[7 - i] = HEXMAP[(inInt >> (i * 4)) & 0b1111];
   }
+  ESP_LOGI(TAG_UUID,"Created HEXvalues");
 }
 
 /*
@@ -57,6 +61,7 @@ void UUIDGen(char *returnUUID)
     returnUUID[i + dashOffset] = returnUUID[i];
   }
   returnUUID[36] = 0;
+  ESP_LOGI(TAG_UUID,"UUID FINISHED... Retuning String!!!");
 }
 
 #endif

@@ -65,6 +65,7 @@ typedef struct {
 
 typedef struct {
     const char *Id;
+    const char *Email;
 
     const char *Name;
     const char *Classe;
@@ -97,6 +98,7 @@ void actuator_change_data(Actuator act,void *data);
 esp_err_t actuator_end(Actuator act);
 
 Device device_init( const char      *Id           ,
+                    const char      *Email        ,
                     const char      *Name         ,
                     const char      *Classe       ,
                     const char      *Description  ,

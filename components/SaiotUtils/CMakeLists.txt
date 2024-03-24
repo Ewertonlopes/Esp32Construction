@@ -1,3 +1,5 @@
-idf_component_register(SRCS "saiotspiffs.c"
+idf_component_register(SRCS "saiotspiffs.c" "saiotjson.c"
                        INCLUDE_DIRS "include"
-                       REQUIRES spiffs)
+                       REQUIRES spiffs
+                                json
+                                SaiotStruct)
