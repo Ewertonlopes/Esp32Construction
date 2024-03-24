@@ -29,8 +29,6 @@ extern "C" {
 #define WIFI_FAIL_BIT      BIT1
 
 extern bool isconnectedwifi;
-extern const char *wifi_ssid;
-extern const char *wifi_pass;
 
 void wifi_init();
 

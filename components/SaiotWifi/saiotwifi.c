@@ -2,9 +2,11 @@
 
 static const char *TAG_WIFI = "SUBMODULE_WIFI";
 
+/*
+ * flag de conexão, handler do wifi e arquivo de configuração
+ */
+
 bool isconnectedwifi = false;
-const char *ssid = "brisa-1835136";
-const char *pass = "osaxzp72";
 
 static EventGroupHandle_t s_wifi_event_group;
 
@@ -15,8 +17,20 @@ wifi_config_t wifi_config = {
     },
 };
 
+/*
+ * contador interno de retrys do wifi...
+ */
+
 static int s_retry_num = 0;
 
+/*
+ * @brief Handler local dos eventos de wifi
+ *
+ * @param arg argumentos excepcionais passados ao evento
+ * @param event_base A base do evento que está sendo desenvolvido
+ * @param event_id ID do evento de wifi
+ * @param event_data os dados presentes nesse evento que ajudam na tomada de decisão
+ */
 
 static void event_handler(void* arg, esp_event_base_t event_base,
                                 int32_t event_id, void* event_data)
@@ -41,6 +55,13 @@ static void event_handler(void* arg, esp_event_base_t event_base,
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
+
+/*
+ * @brief função local de inicialização do wifi em modo station
+ *
+ * @param void
+ * @return void
+ */
 
 static void wifi_init_sta(void)
 {
@@ -90,6 +111,13 @@ static void wifi_init_sta(void)
         ESP_LOGE(TAG_WIFI, "UNEXPECTED EVENT");
     }
 }
+
+/*
+ * @brief Interface da biblioteca que cuida das inicializações necessarias do wifi
+ *
+ * @param void
+ * @return void
+ */
 
 void wifi_init(){
     //Initialize NVS

@@ -3,6 +3,13 @@
 
 #include <esp_random.h>
 
+/*
+ * @brief Função auxiliar para transformar inteiros em HEX
+ *
+ * @param inInt Valor em inteiro
+ * @returnVar Valor em Hexadecimal
+ */
+
 void IntToHex(const unsigned int inInt, char *returnVar)
 {
   const char *HEXMAP = "0123456789abcdef";
@@ -10,6 +17,12 @@ void IntToHex(const unsigned int inInt, char *returnVar)
     returnVar[7 - i] = HEXMAP[(inInt >> (i * 4)) & 0b1111];
   }
 }
+
+/*
+ * @brief Função que retorna uma UUID v4 válida
+ *
+ * @param returnUUID o valor de retorno da uuid
+ */
 
 void UUIDGen(char *returnUUID)
 {
