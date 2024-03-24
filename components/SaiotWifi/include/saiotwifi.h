@@ -21,11 +21,18 @@ extern "C" {
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
+#define ESP_MAXIMUM_RETRY 5
+#define ESP_WIFI_SSID "brisa-1835136"
+#define ESP_WIFI_PASS "osaxzp72"
+
+#define WIFI_CONNECTED_BIT BIT0
+#define WIFI_FAIL_BIT      BIT1
+
 extern bool isconnectedwifi;
 extern const char *wifi_ssid;
 extern const char *wifi_pass;
 
-void wifi_connection();
+void wifi_init();
 
 #ifdef __cplusplus
 }
