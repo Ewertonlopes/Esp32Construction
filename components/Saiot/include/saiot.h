@@ -38,6 +38,11 @@ static esp_err_t saiot_device_get();
 static esp_err_t saiot_device_save();
 static esp_err_t saiot_subscribe_basic();
 
+void saiot_mqtt_callback(char *topic,char *data);
+
+static esp_err_t saiot_mqtt_topic_message(char *data);
+static esp_err_t saiot_mqtt_topic_config(char *data);
+static esp_err_t saiot_mqtt_topic_act(char *data);
 
 #ifdef __cplusplus
 }

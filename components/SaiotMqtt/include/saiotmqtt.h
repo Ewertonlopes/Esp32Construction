@@ -22,6 +22,8 @@ extern "C" {
 #include "esp_log.h"
 #include "mqtt_client.h"
 
+#include "saiot.h"
+
 #define BROKER_ADDR "mqtt://dev.saiot2.ect.ufrn.br:8000"
 
 #define MAX_TOPIC_LENGTH 128

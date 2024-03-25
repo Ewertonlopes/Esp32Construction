@@ -3,7 +3,7 @@
 static const char *TAG_SAIOT = "MODULE_SAIOT";
 
 Device Saiot_Device = NULL;
-bool isidentified = false;
+bool isaproved = false;
 bool islogged = false;
 
 /*
@@ -22,9 +22,15 @@ esp_err_t saiot_init(const char      *Email        ,
 
     if(spiffs_data_exists("/spiffs/config.txt"))
     {
-        saiot_device_get();
+
+        ESP_LOGI(TAG_SAIOT,"Device Exists in Memory!!! Recovering from memory!!!");
+
+        char *config_spiffs = spiffs_data_get("/spiffs/config.txt"); 
+        char *password = spiffs_data_get("/spiffs/password.txt");
+
+        saiot_device_get(config_spiffs,password);
         ESP_LOGI(TAG_SAIOT,"Device Created Sucesfully");
-        isidentified = true;
+        isaproved = true;
     }
     else{
         char returnUUID[37];
@@ -47,18 +53,13 @@ esp_err_t saiot_init(const char      *Email        ,
     return  ESP_OK;
 }
 
-static esp_err_t saiot_device_get() {
+static esp_err_t saiot_device_get(char *config, char *password) {
 
     if(Saiot_Device != NULL) device_end(Saiot_Device);
 
-    ESP_LOGI(TAG_SAIOT,"Device Exists in Memory!!! Recovering from memory!!!");
-    
-    char *config_spiffs = spiffs_data_get("/spiffs/config.txt"); 
-    char *password = "senha123";//spiffs_data_get("/spiffs/password.txt");
+    ESP_LOGD(TAG_SAIOT,"%s", config);
 
-    ESP_LOGD(TAG_SAIOT,"%s", config_spiffs);
-
-    cJSON *Jsonob = json_parse_object(config_spiffs);
+    cJSON *Jsonob = json_parse_object(config);
       
     char *prev_id = (cJSON_GetObjectItemCaseSensitive(Jsonob, "id"))->valuestring;
     char *prev_email = (cJSON_GetObjectItemCaseSensitive(Jsonob, "email"))->valuestring;
@@ -162,6 +163,7 @@ static esp_err_t saiot_device_save() {
     ESP_LOGI(TAG_SAIOT, "Saved Passwords");
 
     json_free_buffer(config);
+    spiffs_end();
     
     return ESP_OK;
 }
@@ -199,3 +201,95 @@ static esp_err_t saiot_subscribe_basic() {
     return ESP_OK;
 }
 
+void saiot_mqtt_callback(char *topic,char *data) {
+    
+    size_t length = strlen(topic);
+
+    char last_letter = topic[length-1];
+
+    switch(last_letter) {
+        case 'e':
+            saiot_mqtt_topic_message(data);      
+            break;
+        case 'g':
+            saiot_mqtt_topic_config(data);
+            break;
+        case 't':
+            saiot_mqtt_topic_act(data);
+            break;
+        default:
+            ESP_LOGD(TAG_SAIOT,"Topico não reconhecido... %s",topic);
+           break;
+    }
+}
+
+static esp_err_t saiot_mqtt_topic_message(char *data) {
+/*
+Ca[d]astre-se 
+Ap[r]ovado
+Lo[g]ado
+Re[c]usado
+De[l]etado
+Ag[u]ardando Aprovação
+*/
+    char third_letter = data[2];
+    
+    switch(third_letter) {
+        case 'd':
+            isaproved = false;
+            islogged = false;
+            if(xClientMQTT != NULL) {
+        
+                xSemaphoreTake( xMutexMQTT, portMAX_DELAY );
+
+                char *config = json_create_config(Saiot_Device);
+                esp_mqtt_client_publish(xClientMQTT, "register-device", config, 0, 0, 0);    
+                
+                json_free_buffer(config);
+
+                xSemaphoreGive( xMutexMQTT );
+            }
+            break;
+        case 'r':
+            isaproved = true;
+            islogged = false;            
+            break;
+        case 'g':
+            isaproved = false;
+            islogged = true;
+            break;
+        case 'c':
+            isaproved = false;
+            islogged = false;
+            break;
+        case 'l':
+            spiffs_data_delete("/spiffs/config.txt");
+            spiffs_data_delete("/spiffs/senha.txt");
+            isaproved = false;
+            islogged = false;
+            break;
+        case 'u':
+            isaproved = false;
+            islogged = false;
+            break;
+        default:
+            ESP_LOGD(TAG_SAIOT,"Topico não reconhecido...");
+            break;
+    }
+    return ESP_OK;
+}
+
+static esp_err_t saiot_mqtt_topic_config(char *data) {
+    spiffs_start();
+    spiffs_check();
+
+    char *password = spiffs_data_get("/spiffs/password.txt");
+
+    saiot_device_get(data,password);
+    spiffs_end();
+    return ESP_OK;
+}
+
+static esp_err_t saiot_mqtt_topic_act(char *data) {
+    return ESP_OK;
+}

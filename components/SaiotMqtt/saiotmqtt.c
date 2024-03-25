@@ -30,7 +30,7 @@ static void log_error_if_nonzero(const char *message, int error_code)
  * @param event_data Dados presentes no evento.
  */
 
-static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
+void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     ESP_LOGD(TAG_MQTT, "Event dispatched from event loop base=%s, event_id=%" PRIi32 "", base, event_id);
     esp_mqtt_event_handle_t event = event_data;
@@ -72,6 +72,8 @@ static void saiot_mqtt_event_handler(void *handler_args, esp_event_base_t base, 
 
                 ESP_LOGD(TAG_MQTT,"TOPIC=%s\r\n", topic_string);
                 ESP_LOGD(TAG_MQTT,"DATA=%s\r\n", data_string);
+
+                saiot_mqtt_callback(topic_string,data_string);
 
                 break;
             case MQTT_EVENT_ERROR:
