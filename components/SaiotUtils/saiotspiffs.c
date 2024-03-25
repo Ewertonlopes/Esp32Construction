@@ -11,7 +11,7 @@ static char spiffs_buffer[SPIFFS_BUFFER_SIZE] = {};
 static esp_vfs_spiffs_conf_t conf = {
     .base_path = "/spiffs",
     .partition_label = NULL,
-    .max_files = 10,
+    .max_files = 50,
     .format_if_mount_failed = true
 };
 

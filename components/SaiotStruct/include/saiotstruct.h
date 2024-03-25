@@ -37,7 +37,7 @@ typedef struct {
     enum sensorType internal_type;
 
     int timeout;
-    float deadband;
+    double deadband;
 
     void *data;
 } Sen, *Sensor;
@@ -65,13 +65,13 @@ typedef struct {
 
 typedef struct {
     const char *Id;
-    const char *Email;
 
+    const char *Email;
+    const char *Password;
+    
     const char *Name;
     const char *Classe;
     const char *Description;
-
-    const char *Password;
 
     int dispnumb;
 
@@ -82,7 +82,7 @@ Sensor sensor_init( const char      *Id           ,
                     const char      *Name         ,
                     const char      *type         ,
                     int             timeout       ,
-                    float           deadband      ,   
+                    double           deadband      ,   
                     enum sensorType internal_type);
 
 void sensor_change_data(Sensor sens,void *data);

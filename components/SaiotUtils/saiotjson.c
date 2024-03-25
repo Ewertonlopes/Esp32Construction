@@ -83,9 +83,6 @@ cJSON* json_create_sensor(Sensor main_sensor) {
             break;
     }
 
-    cJSON_AddNumberToObject(root, "value", *(float*)main_sensor->data);
-
-
     cJSON_AddNumberToObject(root, "timeout", main_sensor->timeout);
     cJSON_AddNumberToObject(root, "deadband", main_sensor->deadband);
     // cJSON_AddFalseToObject(root, "Boolean_2");
@@ -135,7 +132,15 @@ bool json_free_buffer(char* Json)
 
 cJSON* json_parse_object(char* Json)
 {
-    return cJSON_Parse(Json);
+    cJSON *mjson = cJSON_Parse(Json);
+    if (mjson == NULL) { 
+        const char *error_ptr = cJSON_GetErrorPtr(); 
+        if (error_ptr != NULL) { 
+            ESP_LOGE(TAG_JSON,"Error: %s\n", error_ptr); 
+        } 
+        cJSON_Delete(mjson);  
+    } 
+    return mjson;
 }
 
 bool json_delete_object(cJSON* Json)

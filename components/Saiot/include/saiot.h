@@ -24,6 +24,7 @@ extern "C" {
 
 #include "saiotjson.h"
 #include "saiotspiffs.h"
+#include "uuidgen.h"
 
 extern Device Saiot_Device;
 
@@ -32,6 +33,9 @@ esp_err_t saiot_init(const char      *Email        ,
                      const char      *Name         ,
                      const char      *Classe       ,
                      const char      *Description  );
+
+static esp_err_t saiot_device_get();
+static esp_err_t saiot_device_save();
 
 #ifdef __cplusplus
 }

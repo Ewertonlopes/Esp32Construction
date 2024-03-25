@@ -18,7 +18,7 @@ Sensor sensor_init( const char      *Id           ,
                     const char      *Name         ,
                     const char      *type         ,
                     int             timeout       ,
-                    float           deadband      , 
+                    double           deadband     , 
                     enum sensorType internal_type){
 
     Sensor base = (Sensor)malloc(sizeof(Sen));

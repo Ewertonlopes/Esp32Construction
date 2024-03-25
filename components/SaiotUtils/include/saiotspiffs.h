@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-#define SPIFFS_BUFFER_SIZE 128
+#define SPIFFS_BUFFER_SIZE 512
 
 bool spiffs_start();
 bool spiffs_end();
