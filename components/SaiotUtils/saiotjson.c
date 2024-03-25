@@ -56,7 +56,8 @@ char* json_create_config(Device main_dev)
         }
     }    
 	
-	char *my_json_string = cJSON_Print(root);
+	char *my_json_string = cJSON_PrintUnformatted(root);
+    
     cJSON_Delete(root);
     return my_json_string;
 }
@@ -72,12 +73,12 @@ cJSON* json_create_sensor(Sensor main_sensor) {
     cJSON_AddStringToObject(root, "name", main_sensor->Name);
     cJSON_AddStringToObject(root, "type", main_sensor->type);
 
-    switch(main_actuator->internal_type) {
+    switch(main_sensor->internal_type) {
         case sensor_number:
             cJSON_AddNumberToObject(root, "value", *(float*)main_sensor->data);
             break;
         default:
-            ESP_LOGE(TAG_STRUCT, "INVALID SENSOR TYPE FOR PARSING JSON!!!");
+            ESP_LOGE(TAG_JSON, "INVALID SENSOR TYPE FOR PARSING JSON!!!");
             cJSON_AddNumberToObject(root, "value", 0);
             break;
     }
@@ -103,7 +104,7 @@ cJSON* json_create_actuator(Actuator main_actuator) {
             cJSON_AddNumberToObject(root, "value", *(bool*)main_actuator->data);
             break;
         default:
-            ESP_LOGE(TAG_STRUCT, "INVALID ACTUATOR TYPE FOR PARSING JSON!!!");
+            ESP_LOGE(TAG_JSON, "INVALID ACTUATOR TYPE FOR PARSING JSON!!!");
             cJSON_AddNumberToObject(root, "value", 0);
             break;
     }

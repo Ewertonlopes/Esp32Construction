@@ -71,7 +71,6 @@ typedef struct {
     const char *Classe;
     const char *Description;
 
-    const char *Login;
     const char *Password;
 
     int dispnumb;
@@ -102,7 +101,6 @@ Device device_init( const char      *Id           ,
                     const char      *Name         ,
                     const char      *Classe       ,
                     const char      *Description  ,
-                    const char      *Login        ,
                     const char      *Password     );
 
 void device_add_sensor(Device devi,Sensor sens);

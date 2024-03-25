@@ -172,7 +172,6 @@ Device device_init( const char      *Id           ,
                     const char      *Name         ,
                     const char      *Classe       ,
                     const char      *Description  ,
-                    const char      *Login        ,
                     const char      *Password     ){
     
     Device base = (Device)malloc(sizeof(Dev));
@@ -182,7 +181,6 @@ Device device_init( const char      *Id           ,
     base->Name = Name;
     base->Classe = Classe;
     base->Description = Description;
-    base->Login = Login;
     base->Password = Password;
     base->dispnumb = 0;
     for(int i=0;i<MAX_ADDONS_SIZE;i++) base->Adds[i] = NULL;

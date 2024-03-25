@@ -31,7 +31,7 @@ esp_err_t saiot_init(const char      *Email        ,
                      const char      *Senha        ,
                      const char      *Name         ,
                      const char      *Classe       ,
-                     const char      *Description  ){};
+                     const char      *Description  );
 
 #ifdef __cplusplus
 }
