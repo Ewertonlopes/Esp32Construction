@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "sstruct.h": "c",
-        "saiotclock.h": "c"
+        "saiotclock.h": "c",
+        "saiotspiffs.h": "c",
+        "saiotjson.h": "c"
     }
 }
