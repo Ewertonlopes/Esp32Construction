@@ -36,6 +36,8 @@ esp_err_t saiot_init(const char      *Email        ,
 
 static esp_err_t saiot_device_get();
 static esp_err_t saiot_device_save();
+static esp_err_t saiot_subscribe_basic();
+
 
 #ifdef __cplusplus
 }

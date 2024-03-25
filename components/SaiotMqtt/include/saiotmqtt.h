@@ -16,6 +16,7 @@ extern "C" {
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 #include "freertos/queue.h"
+#include "freertos/event_groups.h"
 
 #include "esp_check.h"
 #include "esp_log.h"
@@ -24,17 +25,14 @@ extern "C" {
 #define BROKER_ADDR "mqtt://dev.saiot2.ect.ufrn.br:8000"
 
 #define MAX_TOPIC_LENGTH 128
-#define MAX_MESSAGE_LENGTH 128
+#define MAX_MESSAGE_LENGTH 512
 
-/*
-@brief Definição da inicialização do sistema e o client mqtt global.
-*/
 
 extern esp_mqtt_client_handle_t xClientMQTT;
 extern SemaphoreHandle_t xMutexMQTT;
 extern bool isconnectedMQTT;
 
-esp_err_t saiot_mqtt_app_start(const char *email, const char *password, const char* id);
+esp_err_t mqtt_init(const char *email, const char *password, const char* id);
 
 #ifdef __cplusplus
 }

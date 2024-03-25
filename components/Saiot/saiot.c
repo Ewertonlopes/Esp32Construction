@@ -3,6 +3,8 @@
 static const char *TAG_SAIOT = "MODULE_SAIOT";
 
 Device Saiot_Device = NULL;
+bool isidentified = false;
+bool islogged = false;
 
 /*
  * @brief
@@ -22,15 +24,26 @@ esp_err_t saiot_init(const char      *Email        ,
     {
         saiot_device_get();
         ESP_LOGI(TAG_SAIOT,"Device Created Sucesfully");
-
-        char *config = json_create_config(Saiot_Device);
-        ESP_LOGI(TAG_SAIOT,"%s",config);
-        json_free_buffer(config);
+        isidentified = true;
     }
     else{
-
+        char returnUUID[37];
+        UUIDGen(returnUUID);
+        Saiot_Device = device_init(returnUUID,Email,Name,Classe,Description,Senha);
     }
+    
+    wifi_init();
+
+    while(!isconnectedwifi) vTaskDelay(150);
+    
+    mqtt_init(Saiot_Device->Email,Saiot_Device->Password,Saiot_Device->Id);
+
+    while(!isconnectedMQTT) vTaskDelay(150);
+
+    saiot_subscribe_basic();
+
     spiffs_end();
+
     return  ESP_OK;
 }
 
@@ -134,5 +147,55 @@ static esp_err_t saiot_device_get() {
 }
 
 static esp_err_t saiot_device_save() {
+    
+    spiffs_start();
+    spiffs_check();
+    
+    if(spiffs_data_exists("/spiffs/config.txt")) spiffs_data_delete("/spiffs/config.txt");
 
+    char *config = json_create_config(Saiot_Device);
+    
+    spiffs_data_save("/spiffs/config.txt",config);
+    ESP_LOGI(TAG_SAIOT, "Saved Configs");
+
+    spiffs_data_save("/spiffs/senha.txt",Saiot_Device->Password);
+    ESP_LOGI(TAG_SAIOT, "Saved Passwords");
+
+    json_free_buffer(config);
+    
+    return ESP_OK;
 }
+
+static esp_err_t saiot_subscribe_basic() {
+    
+    if(!isconnectedMQTT || !isconnectedwifi) return ESP_FAIL;
+
+    char message_topic[50];
+    char config_topic[50];
+    char act_topic[50];
+
+    strcpy(message_topic,Saiot_Device->Id);
+    strcat(message_topic,"/message");
+
+    strcpy(config_topic,Saiot_Device->Id);
+    strcat(config_topic,"/config");
+
+    strcpy(act_topic,Saiot_Device->Id);
+    strcat(act_topic,"/act");
+
+    if(xClientMQTT != NULL)
+    {
+        xSemaphoreTake( xMutexMQTT, portMAX_DELAY );
+
+        int msg_id = esp_mqtt_client_subscribe(xClientMQTT, message_topic, 0);
+        ESP_LOGI(TAG_SAIOT, "sent subscribe successful, msg_id=%d", msg_id);
+        msg_id = esp_mqtt_client_subscribe(xClientMQTT, config_topic, 0);
+        ESP_LOGI(TAG_SAIOT, "sent subscribe successful, msg_id=%d", msg_id);
+        msg_id = esp_mqtt_client_subscribe(xClientMQTT, act_topic, 0);
+        ESP_LOGI(TAG_SAIOT, "sent subscribe successful, msg_id=%d", msg_id);
+        
+        xSemaphoreGive( xMutexMQTT );
+    }
+    return ESP_OK;
+}
+
