@@ -34,7 +34,7 @@ esp_err_t saiot_init(const char      *Email        ,
                      const char      *Classe       ,
                      const char      *Description  );
 
-static esp_err_t saiot_device_get();
+static esp_err_t saiot_device_get(char *config, char *password);
 static esp_err_t saiot_device_save();
 static esp_err_t saiot_subscribe_basic();
 
