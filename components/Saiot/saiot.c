@@ -6,11 +6,6 @@ Device Saiot_Device = NULL;
 bool isaproved = false;
 bool islogged = false;
 
-/*
- * @brief
- * @param 
- */
-
 esp_err_t saiot_init(const char      *Email        ,
                      const char      *Senha        ,
                      const char      *Name         ,
@@ -19,16 +14,21 @@ esp_err_t saiot_init(const char      *Email        ,
 
     spiffs_start();
     spiffs_check();
+    
+    spiffs_data_delete("/spiffs/config.txt");
 
-    if(spiffs_data_exists("/spiffs/config.txt"))
-    {
+    if(   spiffs_data_exists("/spiffs/config.txt")
+       && spiffs_data_exists("/spiffs/password.txt") 
+       && spiffs_data_exists("/spiffs/links.txt")) {
 
         ESP_LOGI(TAG_SAIOT,"Device Exists in Memory!!! Recovering from memory!!!");
 
         char *config_spiffs = spiffs_data_get("/spiffs/config.txt"); 
         char *password = spiffs_data_get("/spiffs/password.txt");
+        char *links = spiffs_data_get("/spiffs/links.txt");
 
         saiot_device_get(config_spiffs,password);
+        saiot_link_get(links);
         ESP_LOGI(TAG_SAIOT,"Device Created Sucesfully");
         isaproved = true;
     }
@@ -38,19 +38,36 @@ esp_err_t saiot_init(const char      *Email        ,
         Saiot_Device = device_init(returnUUID,Email,Name,Classe,Description,Senha);
     }
     
-    wifi_init();
+    // wifi_init();
 
-    while(!isconnectedwifi) vTaskDelay(150);
+    // while(!isconnectedwifi) vTaskDelay(150);
     
-    mqtt_init(Saiot_Device->Email,Saiot_Device->Password,Saiot_Device->Id);
+    // mqtt_init(Saiot_Device->Email,Saiot_Device->Password,Saiot_Device->Id);
 
-    while(!isconnectedMQTT) vTaskDelay(150);
+    // while(!isconnectedMQTT) vTaskDelay(150);
 
-    saiot_subscribe_basic();
+    // saiot_subscribe_basic();
 
     spiffs_end();
 
     return  ESP_OK;
+}
+
+double * saiot_add_sensor_number(char *Id,char *Name,char *type, int timeout, double deadband) {
+
+    Sensor new_sensor = sensor_init(Id,Name,type,timeout,deadband,sensor_number);
+    double *number_link = malloc(sizeof(double));
+
+    device_add_sensor(Saiot_Device,new_sensor);
+
+    new_sensor->data = number_link;
+    *number_link = 0;
+    ESP_LOGI(TAG_SAIOT,"Sensor %s is linked", Id);
+    return number_link;
+}
+
+void sensor_run(Sensor sens){
+    xTaskCreate(&base_sensor_task, sens->Id, 4096, sens, 12, NULL);
 }
 
 static esp_err_t saiot_device_get(char *config, char *password) {
@@ -147,24 +164,83 @@ static esp_err_t saiot_device_get(char *config, char *password) {
     return  ESP_OK;
 }
 
+static esp_err_t saiot_link_get(char *links) {
+    char *token;
+    int i = 0;
+    
+    token = strtok(links, " ");
+    while (token != NULL && i < Saiot_Device->dispnumb) {
+        bool isactuator = Saiot_Device->Adds[i]->disp;
+        if(isactuator) {
+            Saiot_Device->Adds[i]->actuator->data = (void *)strtol(token, NULL, 16);
+            ESP_LOGI(TAG_SAIOT,"Actuator %s is linked",Saiot_Device->Adds[i]->actuator->Id );
+        }
+        else {
+            Saiot_Device->Adds[i]->sensor->data = (void *)strtol(token, NULL, 16);
+            ESP_LOGI(TAG_SAIOT,"Sensor %s is linked",Saiot_Device->Adds[i]->sensor->Id );
+        }
+
+        token = strtok(NULL, " ");
+        i++;
+    }
+    return ESP_OK;
+}
+
 static esp_err_t saiot_device_save() {
     
     spiffs_start();
     spiffs_check();
     
     if(spiffs_data_exists("/spiffs/config.txt")) spiffs_data_delete("/spiffs/config.txt");
+    saiot_device_save_config();
 
+    if(spiffs_data_exists("/spiffs/password.txt")) spiffs_data_delete("/spiffs/password.txt");
+    saiot_device_save_senha();
+
+    if(spiffs_data_exists("/spiffs/link.txt")) spiffs_data_delete("/spiffs/link.txt");
+    saiot_device_save_link();
+
+    spiffs_end();
+    
+    return ESP_OK;
+}
+
+static esp_err_t saiot_device_save_config() {
     char *config = json_create_config(Saiot_Device);
     
     spiffs_data_save("/spiffs/config.txt",config);
     ESP_LOGI(TAG_SAIOT, "Saved Configs");
-
-    spiffs_data_save("/spiffs/senha.txt",Saiot_Device->Password);
-    ESP_LOGI(TAG_SAIOT, "Saved Passwords");
-
-    json_free_buffer(config);
-    spiffs_end();
     
+    json_free_buffer(config);
+    return ESP_OK;
+}
+
+static esp_err_t saiot_device_save_senha() {
+    char *senha = Saiot_Device->Password;
+    spiffs_data_save("/spiffs/senha.txt",senha);
+    ESP_LOGI(TAG_SAIOT, "Saved Passwords");
+    return ESP_OK;
+}
+
+static esp_err_t saiot_device_save_link() {
+    char buffer[200];
+    buffer[0] = '\0'; 
+    char temp[20];
+    
+    for (int i = 0; i < Saiot_Device->dispnumb; i++) {
+        bool isactuator = Saiot_Device->Adds[i]->disp;
+        if(isactuator) {
+            sprintf(temp, "%p ", Saiot_Device->Adds[i]->actuator->data);
+            strncat(buffer, temp, -1);
+        }
+        else {
+            sprintf(temp, "%p ", Saiot_Device->Adds[i]->sensor->data);
+            strncat(buffer, temp, -1);
+        }
+    }
+
+    ESP_LOGI(TAG_SAIOT,"Links saved: %s", buffer);
+    spiffs_data_save("/spiffs/links.txt",buffer);
     return ESP_OK;
 }
 
@@ -292,4 +368,19 @@ static esp_err_t saiot_mqtt_topic_config(char *data) {
 
 static esp_err_t saiot_mqtt_topic_act(char *data) {
     return ESP_OK;
+}
+
+static void base_sensor_task(void * pvParams) {
+    
+    TickType_t xLastWakeTime;
+  
+    Sensor Sens = (Sensor) pvParams;
+    ESP_LOGI(TAG_SAIOT,"%p",Sens->data); 
+    double *valuenow = ((double*)Sens->data);
+    xLastWakeTime = xTaskGetTickCount();
+    
+    while (1){
+        ESP_LOGI(TAG_SAIOT,"%lf",*valuenow);   
+        vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Sens->timeout));
+    }
 }

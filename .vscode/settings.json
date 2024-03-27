@@ -4,6 +4,7 @@
         "saiotclock.h": "c",
         "saiotspiffs.h": "c",
         "saiotjson.h": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "saiot.h": "c"
     }
 }

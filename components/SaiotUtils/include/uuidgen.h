@@ -8,7 +8,6 @@ extern "C" {
 #include <esp_random.h>
 #include <esp_log.h>
 
-static void IntToHex(const unsigned int inInt, char *returnVar);
 void UUIDGen(char *returnUUID);
 
 #ifdef __cplusplus

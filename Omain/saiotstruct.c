@@ -98,7 +98,6 @@ void sensor_add_mqtt_client(Sensor sens, esp_mqtt_client_handle_t mqttclient)
 }
 
 void sensor_run(Sensor sens){
-
     xTaskCreate(&base_sensor_task, sens->Id, 4096, sens, 1, NULL);
 }
 

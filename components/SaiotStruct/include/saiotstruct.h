@@ -85,7 +85,6 @@ Sensor sensor_init( const char      *Id           ,
                     double           deadband      ,   
                     enum sensorType internal_type);
 
-void sensor_change_data(Sensor sens,void *data);
 esp_err_t sensor_end(Sensor sens);
 
 Actuator actuator_init( const char      *Id           ,
@@ -93,7 +92,6 @@ Actuator actuator_init( const char      *Id           ,
                         const char      *type         ,   
                         enum ActuatorType internal_type);
 
-void actuator_change_data(Actuator act,void *data);
 esp_err_t actuator_end(Actuator act);
 
 Device device_init( const char      *Id           ,
