@@ -111,7 +111,7 @@ cJSON* json_create_actuator(Actuator main_actuator) {
     return root;
 }
 
-char* json_create_payload_float (char *ID,float value)
+char* json_create_payload_double (char *ID,double value)
 {
     cJSON *root;
     root = cJSON_CreateObject();
@@ -119,7 +119,7 @@ char* json_create_payload_float (char *ID,float value)
     cJSON_AddStringToObject(root, "id", ID);
     cJSON_AddNumberToObject(root, "value", value);
 	
-	char *my_json_string = cJSON_Print(root);
+	char *my_json_string = cJSON_PrintUnformatted(root);
     cJSON_Delete(root);
     return my_json_string;
 }

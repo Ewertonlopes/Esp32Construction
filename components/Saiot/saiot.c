@@ -53,21 +53,17 @@ esp_err_t saiot_init(const char      *Email        ,
     return  ESP_OK;
 }
 
-double * saiot_add_sensor_number(char *Id,char *Name,char *type, int timeout, double deadband) {
-
-    Sensor new_sensor = sensor_init(Id,Name,type,timeout,deadband,sensor_number);
-    double *number_link = malloc(sizeof(double));
-
-    device_add_sensor(Saiot_Device,new_sensor);
-
-    new_sensor->data = number_link;
-    *number_link = 0;
-    ESP_LOGI(TAG_SAIOT,"Sensor %s is linked", Id);
-    return number_link;
-}
-
-void sensor_run(Sensor sens){
-    xTaskCreate(&base_sensor_task, sens->Id, 4096, sens, 12, NULL);
+esp_err_t saiot_sensor_run(Sensor sens){
+    switch (sens->internal_type)
+    {
+        case sensor_number
+            xTaskCreate(&number_sensor_task, sens->Id, 4096, sens, 12, NULL);
+            break;
+        default:
+            ESP_LOGD(TAG_SAIOT,"%s: tipo do sensor não conhecido",sens->Name);
+            break;
+    }
+    return ESP_OK;
 }
 
 static esp_err_t saiot_device_get(char *config, char *password) {
@@ -370,17 +366,47 @@ static esp_err_t saiot_mqtt_topic_act(char *data) {
     return ESP_OK;
 }
 
-static void base_sensor_task(void * pvParams) {
+
+/************************************************
+ *     Espaço para adicionar outros Sensores    *
+ ************************************************/
+
+
+
+
+
+
+double * saiot_add_sensor_number(char *Id,char *Name,char *type, int timeout, double deadband) {
+
+    Sensor new_sensor = sensor_init(Id,Name,type,timeout,deadband,sensor_number);
+    double *number_link = malloc(sizeof(double));
+
+    device_add_sensor(Saiot_Device,new_sensor);
+
+    new_sensor->data = number_link;
+    *number_link = 0;
+    ESP_LOGI(TAG_SAIOT,"Sensor %s is linked", Id);
+    return number_link;
+}
+
+static void number_sensor_task(void * pvParams) {
     
     TickType_t xLastWakeTime;
   
-    Sensor Sens = (Sensor) pvParams;
-    ESP_LOGI(TAG_SAIOT,"%p",Sens->data); 
-    double *valuenow = ((double*)Sens->data);
+    Sensor Sens = (Sensor) pvParams; 
+
     xLastWakeTime = xTaskGetTickCount();
     
+    double *valuenow = ((double*)Sens->data);
+    char *payload = json_create_payload_double(Sens->Id,*valuenow);
+
     while (1){
-        ESP_LOGI(TAG_SAIOT,"%lf",*valuenow);   
+        ESP_LOGI(TAG_SAIOT,"%s",payload);
+        
+        json_free_buffer(payload);
+        payload = json_create_payload_double(Sens->Id,*valuenow);
+
+
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Sens->timeout));
     }
 }

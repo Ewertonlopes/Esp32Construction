@@ -20,7 +20,7 @@ extern "C" {
 char* json_create_config(Device main_dev);
 cJSON* json_create_sensor(Sensor main_sensor);
 cJSON* json_create_actuator(Actuator main_actuator);
-char* json_create_payload_float(char *ID,float value);
+char* json_create_payload_double(char *ID,double value);
 cJSON* json_parse_object(char* Json);
 bool json_delete_object(cJSON* Json);
 bool json_free_buffer(char* Json);

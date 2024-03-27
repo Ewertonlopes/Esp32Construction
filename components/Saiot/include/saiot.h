@@ -34,11 +34,9 @@ esp_err_t saiot_init(const char      *Email        ,
                      const char      *Classe       ,
                      const char      *Description  );
 
-double * saiot_add_sensor_number(char *Id,char *Name,char *type, int timeout, double deadband);
-void sensor_run(Sensor sens);
+esp_err_t saiot_sensor_run(Sensor sens);
 
 void saiot_mqtt_callback(char *topic,char *data);
-
 
 /*
  * Static Functions
@@ -54,7 +52,14 @@ static esp_err_t saiot_subscribe_basic();
 static esp_err_t saiot_mqtt_topic_message(char *data);
 static esp_err_t saiot_mqtt_topic_config(char *data);
 static esp_err_t saiot_mqtt_topic_act(char *data);
-static void base_sensor_task(void * pvParams);
+
+
+/*
+ * Funções Sensores
+ */
+
+double * saiot_add_sensor_number(char *Id,char *Name,char *type, int timeout, double deadband);
+static void number_sensor_task(void * pvParams);
 
 #ifdef __cplusplus
 }
