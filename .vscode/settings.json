@@ -5,6 +5,7 @@
         "saiotspiffs.h": "c",
         "saiotjson.h": "c",
         "typeinfo": "c",
-        "saiot.h": "c"
+        "saiot.h": "c",
+        "uuidgen.h": "c"
     }
 }

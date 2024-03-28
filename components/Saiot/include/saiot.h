@@ -19,7 +19,7 @@ extern "C" {
 #include "saiotmqtt.h"
 
 /********************
- ****** Extras ******
+ ******* Utils ******
  ********************/
 
 #include "saiotjson.h"
@@ -27,6 +27,10 @@ extern "C" {
 #include "uuidgen.h"
 
 extern Device Saiot_Device;
+
+/******************************
+ ****** Funções Externas ******
+ ******************************/
 
 esp_err_t saiot_init(const char      *Email        ,
                      const char      *Senha        ,
@@ -38,9 +42,9 @@ esp_err_t saiot_sensor_run(Sensor sens);
 
 void saiot_mqtt_callback(char *topic,char *data);
 
-/*
- * Static Functions
- */
+/******************************
+ ***** Funções Estaticas ******
+ ******************************/
 
 static esp_err_t saiot_device_get(char *config, char *password);
 static esp_err_t saiot_link_get(char *links);
@@ -53,10 +57,9 @@ static esp_err_t saiot_mqtt_topic_message(char *data);
 static esp_err_t saiot_mqtt_topic_config(char *data);
 static esp_err_t saiot_mqtt_topic_act(char *data);
 
-
-/*
- * Funções Sensores
- */
+/******************************
+ ****** Funções Sensores ******
+ ******************************/
 
 double * saiot_add_sensor_number(char *Id,char *Name,char *type, int timeout, double deadband);
 static void number_sensor_task(void * pvParams);
